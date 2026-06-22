@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: mart_fundamentals
+    description: >
+      Gold mart: one row per company per fiscal period with canonical financial
+      metrics pivoted to columns. Source for the company-vs-company comparison
+      dashboard and a primary table for the NL Q&A layer.
+    columns:
+      - name: ticker
+        description: "Stock ticker symbol."
+        data_tests: [not_null]
+      - name: period_end
+        description: "Fiscal period end date."
+        data_tests: [not_null]
+      - name: revenue
+        description: "Total revenue (USD) for the period, normalized from XBRL."
+      - name: net_income
+        description: "Net income / loss (USD) for the period."
+      - name: rnd_expense
+        description: "Research & development expense (USD)."
+      - name: capex
+        description: "Capital expenditures (USD), a proxy for infrastructure (incl. AI) spend."
+      - name: net_margin
+        description: "net_income / revenue."
+    # Grain uniqueness (ticker + period_end) is verified by the singular test
+    # tests/assert_mart_fundamentals_grain.sql.
+
+  - name: mart_prices
+    description: "Gold mart: daily price features (returns, moving averages) per company."
+    columns:
+      - name: ticker
+        data_tests: [not_null]
+      - name: trade_date
+        data_tests: [not_null]
+      - name: adj_close
+        description: "Dividend/split-adjusted close price."
+
+  - name: mart_ai_commitments
+    description: >
+      Gold mart: LLM-extracted AI investment commitments joined to fundamentals so
+      the amount can be sliced against revenue, cash flow, and profit.
+    columns:
+      - name: ticker
+        data_tests: [not_null]
+      - name: amount_usd
+        description: "Extracted committed amount in USD (nullable when unquantified)."
+      - name: confidence
+        description: "LLM extraction confidence in [0, 1]."
+
+  - name: mart_ai_events
+    description: "Gold mart: curated industry-wide AI events for chart overlays/tooltips."
+    columns:
+      - name: event_date
+        data_tests: [not_null]
+      - name: event_name
+        data_tests: [not_null]

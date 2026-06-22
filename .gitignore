@@ -1,0 +1,41 @@
+# Secrets / env
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# dbt
+dbt/**/target/
+dbt/**/dbt_packages/
+dbt/**/logs/
+profiles.yml
+!profiles.yml.example
+!dbt/sp500_analytics/ci/profiles.yml
+
+# Data — never commit raw/processed datasets to git
+data/
+*.parquet
+*.csv
+!dbt/**/seeds/*.csv
+*.duckdb
+
+# Power BI temp
+*.pbix.tmp
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+
+# dbt anonymous usage file
+.user.yml

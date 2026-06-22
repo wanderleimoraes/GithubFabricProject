@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    env:
+      DATA_DIR: ${{ github.workspace }}/data
+      DBT_PROFILES_DIR: ${{ github.workspace }}/dbt/sp500_analytics/ci
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint (ruff)
+        run: ruff check ingestion extraction nl_query
+
+      - name: Ingest a tiny sample (smoke test)
+        env:
+          SEC_USER_AGENT: "SP500 CI wanderleimoraes@gmail.com"
+        run: |
+          python -m ingestion.sp500_constituents
+          python -m ingestion.market_prices --limit 5
+          python -m ingestion.edgar_fundamentals --limit 5
+          python -m ingestion.edgar_filings --limit 5 --forms 8-K
+
+      - name: dbt build against DuckDB
+        working-directory: dbt/sp500_analytics
+        run: |
+          dbt seed --target duckdb
+          dbt build --target duckdb --exclude mart_ai_commitments stg_ai_commitments
+
+      - name: dbt docs generate
+        working-directory: dbt/sp500_analytics
+        run: dbt docs generate --target duckdb

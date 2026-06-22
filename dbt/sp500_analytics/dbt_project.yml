@@ -1,0 +1,32 @@
+name: "sp500_analytics"
+version: "1.0.0"
+config-version: 2
+
+profile: "sp500_analytics"
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  sp500_analytics:
+    staging:
+      +materialized: view
+      +schema: silver
+    intermediate:
+      +materialized: view
+      +schema: silver
+    marts:
+      +materialized: table
+      +schema: gold
+
+seeds:
+  sp500_analytics:
+    +schema: gold
+    ai_industry_events:
+      +column_types:
+        event_date: date

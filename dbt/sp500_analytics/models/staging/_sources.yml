@@ -1,0 +1,40 @@
+version: 2
+
+# Bronze sources. In local/DuckDB mode these map to Parquet files produced by the
+# ingestion layer; on Databricks they map to Delta tables in `sp500.bronze`.
+# The `external` config is read by the dbt-duckdb adapter; the Databricks adapter
+# resolves the same identifiers as managed tables.
+
+sources:
+  - name: bronze
+    description: "Raw ingested data, as-is from source (Bronze / Medallion layer)."
+    schema: bronze
+    tables:
+      - name: sp500_constituents
+        description: "S&P 500 reference list with ticker, company, sector, CIK."
+        meta:
+          external_location: "{{ env_var('DATA_DIR', '../../data') }}/bronze/sp500_constituents/sp500_constituents.parquet"
+
+      - name: market_prices
+        description: "Daily OHLCV prices from yfinance."
+        loaded_at_field: _ingested_at
+        freshness:
+          warn_after: { count: 48, period: hour }
+          error_after: { count: 168, period: hour }
+        meta:
+          external_location: "{{ env_var('DATA_DIR', '../../data') }}/bronze/market_prices/market_prices.parquet"
+
+      - name: fundamentals
+        description: "Long-format XBRL facts from SEC EDGAR companyfacts."
+        meta:
+          external_location: "{{ env_var('DATA_DIR', '../../data') }}/bronze/fundamentals/fundamentals.parquet"
+
+      - name: filings
+        description: "SEC EDGAR filing metadata (8-K and others)."
+        meta:
+          external_location: "{{ env_var('DATA_DIR', '../../data') }}/bronze/filings/filings.parquet"
+
+      - name: ai_commitments
+        description: "LLM-extracted AI investment commitments from transcripts/8-Ks."
+        meta:
+          external_location: "{{ env_var('DATA_DIR', '../../data') }}/bronze/ai_commitments/ai_commitments.parquet"

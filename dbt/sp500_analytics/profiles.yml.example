@@ -1,0 +1,21 @@
+# Copy to ~/.dbt/profiles.yml (or set DBT_PROFILES_DIR) and fill in.
+# Two targets: `duckdb` for free local development/CI, `databricks` for production.
+
+sp500_analytics:
+  target: duckdb        # default; override with `dbt build --target databricks`
+  outputs:
+
+    duckdb:
+      type: duckdb
+      path: "../../data/sp500.duckdb"   # local single-file warehouse
+      threads: 4
+      # Bronze Parquet is read directly via external sources (see _sources.yml).
+
+    databricks:
+      type: databricks
+      catalog: "{{ env_var('DATABRICKS_CATALOG', 'sp500') }}"
+      schema: "{{ env_var('DATABRICKS_SCHEMA', 'gold') }}"
+      host: "{{ env_var('DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
+      threads: 4
