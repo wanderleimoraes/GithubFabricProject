@@ -22,7 +22,8 @@ SEC_TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
 
 def fetch_constituents() -> pd.DataFrame:
     """Return the S&P 500 list with ticker, company, sector, sub-industry."""
-    tables = pd.read_html(WIKI_URL)
+    # Wikipedia returns HTTP 403 to requests without a browser-like User-Agent.
+    tables = pd.read_html(WIKI_URL, storage_options={"User-Agent": "Mozilla/5.0"})
     df = tables[0]
     df = df.rename(
         columns={

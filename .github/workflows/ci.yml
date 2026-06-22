@@ -24,22 +24,19 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Lint (ruff)
-        run: ruff check ingestion extraction nl_query
+        run: ruff check ingestion extraction nl_query scripts
 
-      - name: Ingest a tiny sample (smoke test)
-        env:
-          SEC_USER_AGENT: "SP500 CI wanderleimoraes@gmail.com"
-        run: |
-          python -m ingestion.sp500_constituents
-          python -m ingestion.market_prices --limit 5
-          python -m ingestion.edgar_fundamentals --limit 5
-          python -m ingestion.edgar_filings --limit 5 --forms 8-K
+      # CI verifies the transformation layer deterministically. Live ingestion
+      # (Wikipedia/SEC/yfinance) is exercised manually/locally, not in CI, to keep
+      # the pipeline build reproducible and independent of external services.
+      - name: Generate sample Bronze data
+        run: python -m scripts.generate_sample_bronze
 
       - name: dbt build against DuckDB
         working-directory: dbt/sp500_analytics
         run: |
           dbt seed --target duckdb
-          dbt build --target duckdb --exclude mart_ai_commitments stg_ai_commitments
+          dbt build --target duckdb
 
       - name: dbt docs generate
         working-directory: dbt/sp500_analytics
