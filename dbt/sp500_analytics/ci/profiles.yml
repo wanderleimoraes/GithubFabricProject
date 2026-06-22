@@ -1,0 +1,9 @@
+# Minimal profile used by CI (and a good local default). Reads Bronze Parquet via
+# the dbt-duckdb adapter and writes everything into a single local DuckDB file.
+sp500_analytics:
+  target: duckdb
+  outputs:
+    duckdb:
+      type: duckdb
+      path: "{{ env_var('DATA_DIR', './data') }}/sp500.duckdb"
+      threads: 4

@@ -1,0 +1,144 @@
+# SP500 AI-Era Analytics — End-to-End Data Engineering Portfolio
+
+An end-to-end data platform analyzing **S&P 500 companies over the last 5 years**,
+with a focus on how the AI boom shows up in their fundamentals, stock performance,
+and public commitments.
+
+This repository is a **portfolio project**. It demonstrates a complete modern data
+engineering stack — multi-source ingestion, a lakehouse with Medallion architecture,
+dbt transformations with tests and documentation, an LLM-based extraction pipeline,
+and AI-friendly analytics (natural-language Q&A + Power BI dashboards).
+
+> **Status:** scaffolding / work in progress. See [Roadmap](#roadmap).
+
+---
+
+## Architecture
+
+```
+                              ┌────────────────────────────────────────────┐
+   PUBLIC DATA SOURCES        │              AZURE DATABRICKS               │
+                              │            (Delta Lake / OneLake)           │
+ ┌──────────────────┐        │                                             │
+ │ SEC EDGAR (XBRL) │──┐     │   BRONZE            SILVER          GOLD     │
+ │  10-K / 10-Q     │  │     │  (raw, as-is) ──► (cleaned,    ──► (marts,   │
+ └──────────────────┘  │     │   ingestion)       typed,         business  │
+ ┌──────────────────┐  │     │                    deduped)       ready)    │
+ │ SEC EDGAR 8-K    │──┼────►│      │                │              │       │
+ │  filings/press   │  │     │      │   ┌────────────┴───┐    ┌─────┴─────┐ │
+ └──────────────────┘  │     │      │   │   dbt Core     │    │ NL Q&A    │ │
+ ┌──────────────────┐  │     │      │   │ staging /      │    │ (Claude   │ │
+ │ yfinance prices  │──┤     │      │   │ intermediate / │    │  text-to- │ │
+ │  daily OHLCV     │  │     │      │   │ marts + tests  │    │  SQL)     │ │
+ └──────────────────┘  │     │      ▼   └────────────────┘    └───────────┘ │
+ ┌──────────────────┐  │     │   LLM extraction layer                       │
+ │ Earnings calls / │──┘     │   (Claude over transcripts/8-Ks →            │
+ │ AI announcements │        │    structured AI-commitment table)           │
+ └──────────────────┘        └───────────────────┬──────────────────────────┘
+                                                  │
+                                                  ▼
+                                      ┌───────────────────────┐
+                                      │  Power BI dashboards   │
+                                      │  + NL Q&A interface    │
+                                      └───────────────────────┘
+```
+
+See [`docs/architecture.md`](docs/architecture.md) for the detailed design,
+data model, and the Medallion (Bronze/Silver/Gold) layering rationale.
+
+---
+
+## Tech Stack
+
+| Layer | Tool | Why |
+|-------|------|-----|
+| Lakehouse / compute | **Azure Databricks** (Delta Lake, Spark) | Industry-standard DE platform; Medallion architecture |
+| Transformation | **dbt Core** | Declarative SQL modeling, tests, lineage, docs |
+| Ingestion | **Python** (yfinance, SEC EDGAR API) | Free public data sources |
+| LLM extraction & Q&A | **Claude API** | NLP extraction of AI commitments; natural-language Q&A |
+| BI / dashboards | **Power BI Desktop** | Native Databricks connector; free; Copilot-friendly |
+| Orchestration | **Databricks Jobs** / GitHub Actions | Scheduling + CI |
+
+---
+
+## Data Sources (all free)
+
+| Source | Data | Auth | Notes |
+|--------|------|------|-------|
+| [SEC EDGAR](https://www.sec.gov/edgar/sec-api-documentation) | XBRL fundamentals (10-K/10-Q), 8-K filings | None (User-Agent required) | Bulk + per-company APIs |
+| [yfinance](https://github.com/ranaroussi/yfinance) | Daily OHLCV prices | None | ~5y daily history |
+| Earnings transcripts | AI commitment text | Varies | Used by the LLM extraction layer |
+| Curated seed file | Major AI industry events (GPT-4, Claude, Gemini launches) | N/A | [`dbt/sp500_analytics/seeds/ai_industry_events.csv`](dbt/sp500_analytics/seeds/ai_industry_events.csv) |
+
+---
+
+## Repository Layout
+
+```
+.
+├── ingestion/          # Python: pull raw data into the Bronze layer
+├── extraction/         # LLM pipeline: extract AI commitments from text
+├── dbt/sp500_analytics/# dbt project: staging → intermediate → marts
+├── nl_query/           # Natural-language Q&A app (text-to-SQL)
+├── dashboards/         # Power BI files + screenshots + design notes
+├── docs/               # Architecture & data model documentation
+└── .github/workflows/  # CI (dbt parse, python lint)
+```
+
+---
+
+## Analytical Deliverables
+
+1. **Natural-language Q&A** — ask questions in plain English; get SQL-backed
+   answers, charts, and narrative text. Powered by Claude reading the dbt catalog.
+2. **Company-vs-company fundamentals** — compare two companies' financials over time.
+3. **AI investment commitments** — how much each company has committed to AI,
+   sliced by cash flow, revenue, profit, market cap, etc.
+4. **Stock price + events overlay** — price over time with tooltips for quarterly
+   results and major AI announcements (company-specific and industry-wide).
+
+---
+
+## Getting Started
+
+> Full setup instructions live in each subfolder's `README.md`.
+
+```bash
+# 1. Python environment
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+
+# 2. Configure secrets (never commit real values)
+cp .env.example .env   # then fill in values
+
+# 3. Pull a small sample of raw data
+python -m ingestion.sp500_constituents
+python -m ingestion.market_prices --limit 10
+python -m ingestion.edgar_fundamentals --limit 10
+
+# 4. Run dbt (after pointing profiles.yml at your warehouse)
+cd dbt/sp500_analytics
+dbt deps && dbt seed && dbt build
+dbt docs generate && dbt docs serve
+```
+
+---
+
+## Roadmap
+
+- [x] Repository scaffold, architecture docs, dbt project skeleton
+- [x] Ingestion scripts (S&P 500 list, yfinance prices, EDGAR fundamentals/filings)
+- [x] AI industry events seed file
+- [ ] Wire ingestion output to Databricks Bronze (Delta)
+- [ ] Flesh out Silver/Gold dbt models + tests
+- [ ] LLM AI-commitment extraction pipeline
+- [ ] Natural-language Q&A app
+- [ ] Power BI dashboards + screenshots
+- [ ] Databricks Jobs orchestration + CI
+
+---
+
+## License
+
+MIT — see [`LICENSE`](LICENSE). Data belongs to its respective providers; this
+project stores code, not redistributed datasets.

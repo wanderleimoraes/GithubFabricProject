@@ -1,0 +1,23 @@
+# Ingestion
+yfinance>=0.2.40
+requests>=2.31
+pandas>=2.1
+pyarrow>=15.0
+lxml>=5.0
+
+# LLM extraction & NL Q&A
+anthropic>=0.40
+
+# NL Q&A app
+streamlit>=1.35
+duckdb>=1.0            # local warehouse for development / CI
+plotly>=5.20
+
+# dbt (use the adapter that matches your warehouse)
+dbt-core>=1.7
+dbt-databricks>=1.7
+dbt-duckdb>=1.7        # local development / CI
+
+# Dev tooling
+ruff>=0.5
+python-dotenv>=1.0
