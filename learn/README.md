@@ -27,10 +27,10 @@ Every lesson has the same structure:
 - [x] **[02 — dbt fundamentals](02-dbt-fundamentals.md)** — models, `source()`/`ref()`, materializations, compile vs run.
 - [x] **[03 — Medallion architecture](03-medallion-architecture.md)** — Bronze / Silver / Gold and why we layer data.
 - [x] **[04 — Transformation techniques](04-transformation-techniques.md)** — normalizing messy XBRL; window functions.
-- [ ] **[05 — Testing & documentation](05-testing-documentation.md)** — dbt tests, docs, and the lineage graph.
+- [x] **[05 — Testing & documentation](05-testing-documentation.md)** — dbt tests, docs, and the lineage graph.
 
 ### Real data & cloud — 🌐 your machine / Azure
-- [ ] **06 — Ingestion & public APIs** — SEC EDGAR, yfinance, rate limits.
+- [ ] **[06 — Ingestion & public APIs](06-ingestion-public-apis.md)** — SEC EDGAR, yfinance, rate limits.
 - [ ] **07 — LLM extraction technique** — turning text into structured rows with Claude.
 - [ ] **08 — Natural-language Q&A** — text-to-SQL over the marts.
 - [ ] **09 — Databricks & Spark** — the lakehouse in the cloud (cost decision point).
