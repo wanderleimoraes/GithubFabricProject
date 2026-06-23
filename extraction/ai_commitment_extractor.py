@@ -26,7 +26,7 @@ from anthropic import Anthropic
 
 from ingestion.config import bronze_path, sec_headers, SEC_REQUEST_DELAY_SECONDS
 
-MODEL = os.getenv("ANTHROPIC_MODEL", "claude-fable-5")
+MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
 
 EXTRACTION_PROMPT = """You are a financial analyst extracting AI-investment commitments \
 from an SEC filing.

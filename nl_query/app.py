@@ -18,7 +18,7 @@ from anthropic import Anthropic
 
 from nl_query.schema_context import allowed_tables, build_schema_context
 
-MODEL = os.getenv("ANTHROPIC_MODEL", "claude-fable-5")
+MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
 DUCKDB_PATH = os.getenv("DUCKDB_PATH", "./data/sp500.duckdb")
 
 SQL_SYSTEM_PROMPT = """You translate questions into a single read-only SQL query for a \
