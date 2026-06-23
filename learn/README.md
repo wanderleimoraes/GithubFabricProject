@@ -30,8 +30,8 @@ Every lesson has the same structure:
 - [x] **[05 — Testing & documentation](05-testing-documentation.md)** — dbt tests, docs, and the lineage graph.
 
 ### Real data & cloud — 🌐 your machine / Azure
-- [ ] **[06 — Ingestion & public APIs](06-ingestion-public-apis.md)** — SEC EDGAR, yfinance, rate limits.
-- [ ] **07 — LLM extraction technique** — turning text into structured rows with Claude.
+- [x] **[06 — Ingestion & public APIs](06-ingestion-public-apis.md)** — SEC EDGAR, yfinance, rate limits.
+- [ ] **[07 — LLM extraction technique](07-llm-extraction-technique.md)** — turning text into structured rows with Claude.
 - [ ] **08 — Natural-language Q&A** — text-to-SQL over the marts.
 - [ ] **09 — Databricks & Spark** — the lakehouse in the cloud (cost decision point).
 - [ ] **10 — Power BI dashboards** — building the four planned reports.
