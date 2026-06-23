@@ -23,7 +23,7 @@ Every lesson has the same structure:
 
 ### Foundation — 💻 runs here (offline, synthetic data)
 - [x] **[00 — Orientation & setup](00-orientation.md)** — what we're building; install the toolchain; map the repo.
-- [ ] **01 — Warehouses & DuckDB** — what a data warehouse is; generate sample data; query it.
+- [ ] **[01 — Warehouses & DuckDB](01-warehouses-duckdb.md)** — what a data warehouse is; generate sample data; query it.
 - [ ] **02 — dbt fundamentals** — models, `source()`/`ref()`, materializations, compile vs run.
 - [ ] **03 — Medallion architecture** — Bronze / Silver / Gold and why we layer data.
 - [ ] **04 — Transformation techniques** — normalizing messy XBRL; window functions.
