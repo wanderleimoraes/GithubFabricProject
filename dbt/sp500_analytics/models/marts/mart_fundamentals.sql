@@ -28,6 +28,7 @@ pivoted as (
         max(case when canonical_metric = 'cash_and_equivalents' then value end) as cash_and_equivalents,
         max(case when canonical_metric = 'eps_diluted'         then value end) as eps_diluted
     from normalized
+    where fiscal_period = 'FY'
     group by ticker, cik, fiscal_year, fiscal_period, period_end
 )
 
