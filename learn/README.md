@@ -25,8 +25,8 @@ Every lesson has the same structure:
 - [x] **[00 — Orientation & setup](00-orientation.md)** — what we're building; install the toolchain; map the repo.
 - [x] **[01 — Warehouses & DuckDB](01-warehouses-duckdb.md)** — what a data warehouse is; generate sample data; query it.
 - [x] **[02 — dbt fundamentals](02-dbt-fundamentals.md)** — models, `source()`/`ref()`, materializations, compile vs run.
-- [ ] **[03 — Medallion architecture](03-medallion-architecture.md)** — Bronze / Silver / Gold and why we layer data.
-- [ ] **04 — Transformation techniques** — normalizing messy XBRL; window functions.
+- [x] **[03 — Medallion architecture](03-medallion-architecture.md)** — Bronze / Silver / Gold and why we layer data.
+- [ ] **[04 — Transformation techniques](04-transformation-techniques.md)** — normalizing messy XBRL; window functions.
 - [ ] **05 — Testing & documentation** — dbt tests, docs, and the lineage graph.
 
 ### Real data & cloud — 🌐 your machine / Azure
