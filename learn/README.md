@@ -33,7 +33,7 @@ Every lesson has the same structure:
 - [x] **[06 — Ingestion & public APIs](06-ingestion-public-apis.md)** — SEC EDGAR, yfinance, rate limits.
 - [x] **[07 — LLM extraction technique](07-llm-extraction-technique.md)** — turning text into structured rows with Claude.
 - [ ] **[08 — Natural-language Q&A](08-natural-language-qa.md)** — text-to-SQL over the marts.
-- [ ] **09 — Cloud lakehouse: Databricks vs Microsoft Fabric** — the lakehouse in the cloud; compare both platforms (the repo is named for Fabric but built on Databricks) and pick one at this cost decision point.
+- [ ] **[09 — Cloud lakehouse: Databricks vs Microsoft Fabric](09-cloud-lakehouse.md)** — the lakehouse in the cloud; compare both platforms and pick one at this cost decision point.
 - [ ] **10 — Power BI dashboards** — building the four planned reports.
 - [ ] **11 — Orchestration & CI** — scheduling the pipeline; what our CI does.
 

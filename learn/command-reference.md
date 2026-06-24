@@ -273,6 +273,31 @@ Press `Ctrl+C` in PowerShell to stop the app when done.
 
 ---
 
+## Cloud platform setup (Module 09)
+
+Module 09 is a read-only decision module — no new shell commands. When you're ready
+to provision the cloud platform, the commands below will apply.
+
+### `dbt build --target databricks`
+**Shell — from `dbt\sp500_analytics\`, after setting four env vars**
+
+Runs the full dbt pipeline against Azure Databricks instead of DuckDB. Requires:
+- `DATABRICKS_HOST` — workspace URL
+- `DATABRICKS_HTTP_PATH` — SQL Warehouse connection path
+- `DATABRICKS_TOKEN` — personal access token
+- `DATABRICKS_CATALOG` — Unity Catalog catalog name (e.g. `sp500`)
+
+The `--target databricks` flag is the only difference from the local workflow. Every
+model, test, and seed runs identically.
+
+### `dbt build --target fabric`
+**Shell — from `dbt\sp500_analytics\`, after adding a fabric profile block**
+
+Same as above but for Microsoft Fabric. Requires the `dbt-fabric` adapter and a
+corresponding target block in `profiles.yml`.
+
+---
+
 ## git commands
 
 ### `git status`
