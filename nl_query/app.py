@@ -108,6 +108,7 @@ def main() -> None:
 
     try:
         con = duckdb.connect(DUCKDB_PATH, read_only=True)
+        con.execute("SET search_path = 'main_gold'")
         df = con.execute(sql).fetchdf()
     except Exception as exc:  # noqa: BLE001 - surface any warehouse error to the UI
         st.error(f"Query failed: {exc}")
