@@ -13,6 +13,7 @@ import re
 
 import duckdb
 import pandas as pd
+import plotly.express as px
 import streamlit as st
 from anthropic import Anthropic
 from dotenv import load_dotenv
@@ -130,16 +131,17 @@ def main() -> None:
         default_x = (date_cols + other_cols or [df.columns[0]])[0]
 
         col1, col2, col3 = st.columns(3)
-        chart_type = col1.selectbox("Chart type", ["Line", "Bar"], index=0)
-        x_col = col2.selectbox("X axis", df.columns.tolist(),
+        chart_type = col1.selectbox("Chart type", ["Line", "Bar", "Pie"], index=0)
+        x_col = col2.selectbox("X axis / Labels", df.columns.tolist(),
                                index=df.columns.tolist().index(default_x))
-        y_col = col3.selectbox("Y axis", numeric, index=0)
+        y_col = col3.selectbox("Y axis / Values", numeric, index=0)
 
-        chart_df = df.set_index(x_col)[[y_col]]
         if chart_type == "Line":
-            st.line_chart(chart_df)
+            st.line_chart(df.set_index(x_col)[[y_col]])
+        elif chart_type == "Bar":
+            st.bar_chart(df.set_index(x_col)[[y_col]])
         else:
-            st.bar_chart(chart_df)
+            st.plotly_chart(px.pie(df, names=x_col, values=y_col), use_container_width=True)
 
 
 if __name__ == "__main__":
