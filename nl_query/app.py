@@ -53,7 +53,8 @@ def generate_sql(client: Anthropic, question: str, schema: str) -> str:
 
 
 def is_safe(sql: str) -> bool:
-    return sql.lower().lstrip().startswith("select") and not FORBIDDEN.search(sql)
+    first_word = sql.lower().lstrip().split()[0] if sql.strip() else ""
+    return first_word in ("select", "with") and not FORBIDDEN.search(sql)
 
 
 def narrate(client: Anthropic, question: str, df: pd.DataFrame) -> str:
