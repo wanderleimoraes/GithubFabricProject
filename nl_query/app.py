@@ -16,7 +16,10 @@ import pandas as pd
 import streamlit as st
 from anthropic import Anthropic
 
-from nl_query.schema_context import allowed_tables, build_schema_context
+try:
+    from nl_query.schema_context import allowed_tables, build_schema_context
+except ImportError:
+    from schema_context import allowed_tables, build_schema_context  # type: ignore[no-redef]
 
 MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
 DUCKDB_PATH = os.getenv("DUCKDB_PATH", "./data/sp500.duckdb")
