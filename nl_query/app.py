@@ -120,15 +120,26 @@ def main() -> None:
     st.subheader("Result")
     st.dataframe(df, use_container_width=True)
 
-    # Best-effort auto chart: prefer a date/time column as x so time-series
-    # questions render correctly; fall back to the first non-numeric column.
+    # Chart controls — let the user pick axes and chart type.
     numeric = df.select_dtypes("number").columns.tolist()
-    date_cols = [c for c in df.columns if c not in numeric
-                 and any(kw in c.lower() for kw in ("date", "time", "period", "year"))]
-    other_cols = [c for c in df.columns if c not in numeric and c not in date_cols]
-    x_col = (date_cols + other_cols or [None])[0]
-    if numeric and x_col and len(df) > 1:
-        st.line_chart(df.set_index(x_col)[numeric[0]])
+    if numeric and len(df) > 1:
+        st.subheader("Chart")
+        date_cols = [c for c in df.columns if c not in numeric
+                     and any(kw in c.lower() for kw in ("date", "time", "period", "year"))]
+        other_cols = [c for c in df.columns if c not in numeric and c not in date_cols]
+        default_x = (date_cols + other_cols or [df.columns[0]])[0]
+
+        col1, col2, col3 = st.columns(3)
+        chart_type = col1.selectbox("Chart type", ["Line", "Bar"], index=0)
+        x_col = col2.selectbox("X axis", df.columns.tolist(),
+                               index=df.columns.tolist().index(default_x))
+        y_col = col3.selectbox("Y axis", numeric, index=0)
+
+        chart_df = df.set_index(x_col)[[y_col]]
+        if chart_type == "Line":
+            st.line_chart(chart_df)
+        else:
+            st.bar_chart(chart_df)
 
 
 if __name__ == "__main__":
