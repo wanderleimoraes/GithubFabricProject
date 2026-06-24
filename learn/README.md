@@ -23,15 +23,15 @@ Every lesson has the same structure:
 
 ### Foundation — 💻 runs here (offline, synthetic data)
 - [x] **[00 — Orientation & setup](00-orientation.md)** — what we're building; install the toolchain; map the repo.
-- [ ] **01 — Warehouses & DuckDB** — what a data warehouse is; generate sample data; query it.
-- [ ] **02 — dbt fundamentals** — models, `source()`/`ref()`, materializations, compile vs run.
-- [ ] **03 — Medallion architecture** — Bronze / Silver / Gold and why we layer data.
-- [ ] **04 — Transformation techniques** — normalizing messy XBRL; window functions.
-- [ ] **05 — Testing & documentation** — dbt tests, docs, and the lineage graph.
+- [x] **[01 — Warehouses & DuckDB](01-warehouses-duckdb.md)** — what a data warehouse is; generate sample data; query it.
+- [x] **[02 — dbt fundamentals](02-dbt-fundamentals.md)** — models, `source()`/`ref()`, materializations, compile vs run.
+- [x] **[03 — Medallion architecture](03-medallion-architecture.md)** — Bronze / Silver / Gold and why we layer data.
+- [x] **[04 — Transformation techniques](04-transformation-techniques.md)** — normalizing messy XBRL; window functions.
+- [x] **[05 — Testing & documentation](05-testing-documentation.md)** — dbt tests, docs, and the lineage graph.
 
 ### Real data & cloud — 🌐 your machine / Azure
-- [ ] **06 — Ingestion & public APIs** — SEC EDGAR, yfinance, rate limits.
-- [ ] **07 — LLM extraction technique** — turning text into structured rows with Claude.
+- [x] **[06 — Ingestion & public APIs](06-ingestion-public-apis.md)** — SEC EDGAR, yfinance, rate limits.
+- [ ] **[07 — LLM extraction technique](07-llm-extraction-technique.md)** — turning text into structured rows with Claude.
 - [ ] **08 — Natural-language Q&A** — text-to-SQL over the marts.
 - [ ] **09 — Databricks & Spark** — the lakehouse in the cloud (cost decision point).
 - [ ] **10 — Power BI dashboards** — building the four planned reports.
