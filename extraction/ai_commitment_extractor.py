@@ -57,6 +57,7 @@ def _load_filings(limit: int | None) -> pd.DataFrame:
         )
     df = pd.read_parquet(path)
     df = df[df["form"] == "8-K"]
+    df = df.sort_values("filing_date", ascending=False)
     return df.head(limit) if limit else df
 
 
