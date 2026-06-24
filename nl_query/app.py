@@ -15,6 +15,9 @@ import duckdb
 import pandas as pd
 import streamlit as st
 from anthropic import Anthropic
+from dotenv import load_dotenv
+
+load_dotenv()
 
 try:
     from nl_query.schema_context import allowed_tables, build_schema_context
