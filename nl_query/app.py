@@ -131,16 +131,32 @@ def main() -> None:
         default_x = (date_cols + other_cols or [df.columns[0]])[0]
 
         col1, col2, col3 = st.columns(3)
-        chart_type = col1.selectbox("Chart type", ["Line", "Bar", "Pie"], index=0)
-        x_col = col2.selectbox("X axis / Labels", df.columns.tolist(),
-                               index=df.columns.tolist().index(default_x))
-        y_col = col3.selectbox("Y axis / Values", numeric, index=0)
+        CHART_TYPES = ["Line", "Bar", "Area", "Scatter", "Histogram", "Pie"]
+        chart_type = col1.selectbox("Chart type", CHART_TYPES, index=0)
+
+        if chart_type == "Scatter":
+            x_col = col2.selectbox("X axis (numeric)", numeric, index=min(1, len(numeric) - 1))
+            y_col = col3.selectbox("Y axis (numeric)", numeric, index=0)
+        elif chart_type == "Histogram":
+            x_col = col2.selectbox("Column", numeric, index=0)
+            y_col = None
+        else:
+            all_cols = df.columns.tolist()
+            x_col = col2.selectbox("X axis / Labels", all_cols,
+                                   index=all_cols.index(default_x))
+            y_col = col3.selectbox("Y axis / Values", numeric, index=0)
 
         if chart_type == "Line":
             st.line_chart(df.set_index(x_col)[[y_col]])
         elif chart_type == "Bar":
             st.bar_chart(df.set_index(x_col)[[y_col]])
-        else:
+        elif chart_type == "Area":
+            st.area_chart(df.set_index(x_col)[[y_col]])
+        elif chart_type == "Scatter":
+            st.plotly_chart(px.scatter(df, x=x_col, y=y_col), use_container_width=True)
+        elif chart_type == "Histogram":
+            st.plotly_chart(px.histogram(df, x=x_col), use_container_width=True)
+        else:  # Pie
             st.plotly_chart(px.pie(df, names=x_col, values=y_col), use_container_width=True)
 
 
