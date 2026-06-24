@@ -120,11 +120,15 @@ def main() -> None:
     st.subheader("Result")
     st.dataframe(df, use_container_width=True)
 
-    # Best-effort auto chart: first datetime/text col as x, first numeric as y.
+    # Best-effort auto chart: prefer a date/time column as x so time-series
+    # questions render correctly; fall back to the first non-numeric column.
     numeric = df.select_dtypes("number").columns.tolist()
-    non_numeric = [c for c in df.columns if c not in numeric]
-    if numeric and non_numeric and len(df) > 1:
-        st.line_chart(df.set_index(non_numeric[0])[numeric[0]])
+    date_cols = [c for c in df.columns if c not in numeric
+                 and any(kw in c.lower() for kw in ("date", "time", "period", "year"))]
+    other_cols = [c for c in df.columns if c not in numeric and c not in date_cols]
+    x_col = (date_cols + other_cols or [None])[0]
+    if numeric and x_col and len(df) > 1:
+        st.line_chart(df.set_index(x_col)[numeric[0]])
 
 
 if __name__ == "__main__":
