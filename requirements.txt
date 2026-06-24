@@ -12,6 +12,7 @@ anthropic>=0.40
 streamlit>=1.35
 duckdb>=1.0            # local warehouse for development / CI
 plotly>=5.20
+tabulate>=0.9          # pandas.to_markdown() dependency
 
 # dbt (use the adapter that matches your warehouse)
 dbt-core>=1.7

@@ -13,10 +13,17 @@ import re
 
 import duckdb
 import pandas as pd
+import plotly.express as px
 import streamlit as st
 from anthropic import Anthropic
+from dotenv import load_dotenv
 
-from nl_query.schema_context import allowed_tables, build_schema_context
+load_dotenv()
+
+try:
+    from nl_query.schema_context import allowed_tables, build_schema_context
+except ImportError:
+    from schema_context import allowed_tables, build_schema_context  # type: ignore[no-redef]
 
 MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
 DUCKDB_PATH = os.getenv("DUCKDB_PATH", "./data/sp500.duckdb")
@@ -47,7 +54,8 @@ def generate_sql(client: Anthropic, question: str, schema: str) -> str:
 
 
 def is_safe(sql: str) -> bool:
-    return sql.lower().lstrip().startswith("select") and not FORBIDDEN.search(sql)
+    first_word = sql.lower().lstrip().split()[0] if sql.strip() else ""
+    return first_word in ("select", "with") and not FORBIDDEN.search(sql)
 
 
 def narrate(client: Anthropic, question: str, df: pd.DataFrame) -> str:
@@ -101,6 +109,7 @@ def main() -> None:
 
     try:
         con = duckdb.connect(DUCKDB_PATH, read_only=True)
+        con.execute("SET search_path = 'main_gold'")
         df = con.execute(sql).fetchdf()
     except Exception as exc:  # noqa: BLE001 - surface any warehouse error to the UI
         st.error(f"Query failed: {exc}")
@@ -112,11 +121,43 @@ def main() -> None:
     st.subheader("Result")
     st.dataframe(df, use_container_width=True)
 
-    # Best-effort auto chart: first datetime/text col as x, first numeric as y.
+    # Chart controls — let the user pick axes and chart type.
     numeric = df.select_dtypes("number").columns.tolist()
-    non_numeric = [c for c in df.columns if c not in numeric]
-    if numeric and non_numeric and len(df) > 1:
-        st.line_chart(df.set_index(non_numeric[0])[numeric[0]])
+    if numeric and len(df) > 1:
+        st.subheader("Chart")
+        date_cols = [c for c in df.columns if c not in numeric
+                     and any(kw in c.lower() for kw in ("date", "time", "period", "year"))]
+        other_cols = [c for c in df.columns if c not in numeric and c not in date_cols]
+        default_x = (date_cols + other_cols or [df.columns[0]])[0]
+
+        col1, col2, col3 = st.columns(3)
+        CHART_TYPES = ["Line", "Bar", "Area", "Scatter", "Histogram", "Pie"]
+        chart_type = col1.selectbox("Chart type", CHART_TYPES, index=0)
+
+        if chart_type == "Scatter":
+            x_col = col2.selectbox("X axis (numeric)", numeric, index=min(1, len(numeric) - 1))
+            y_col = col3.selectbox("Y axis (numeric)", numeric, index=0)
+        elif chart_type == "Histogram":
+            x_col = col2.selectbox("Column", numeric, index=0)
+            y_col = None
+        else:
+            all_cols = df.columns.tolist()
+            x_col = col2.selectbox("X axis / Labels", all_cols,
+                                   index=all_cols.index(default_x))
+            y_col = col3.selectbox("Y axis / Values", numeric, index=0)
+
+        if chart_type == "Line":
+            st.line_chart(df.set_index(x_col)[[y_col]])
+        elif chart_type == "Bar":
+            st.bar_chart(df.set_index(x_col)[[y_col]])
+        elif chart_type == "Area":
+            st.area_chart(df.set_index(x_col)[[y_col]])
+        elif chart_type == "Scatter":
+            st.plotly_chart(px.scatter(df, x=x_col, y=y_col), use_container_width=True)
+        elif chart_type == "Histogram":
+            st.plotly_chart(px.histogram(df, x=x_col), use_container_width=True)
+        else:  # Pie
+            st.plotly_chart(px.pie(df, names=x_col, values=y_col), use_container_width=True)
 
 
 if __name__ == "__main__":
