@@ -273,6 +273,20 @@ Press `Ctrl+C` in PowerShell to stop the app when done.
 
 ---
 
+## Power BI data export (Module 10)
+
+### `python -m scripts.export_marts_csv`
+**Shell — from the repo root**
+
+Connects to the local DuckDB warehouse, reads all four Gold mart tables, and writes
+them as CSV files to `data/export/`. Use this to refresh the local Power BI data
+source after running `dbt build --target duckdb`.
+
+**What goes wrong:** Running without first building the dbt models means the Gold
+tables don't exist yet → run `dbt build --target duckdb` first.
+
+---
+
 ## Cloud platform setup (Module 09)
 
 Module 09 is a read-only decision module — no new shell commands. When you're ready
