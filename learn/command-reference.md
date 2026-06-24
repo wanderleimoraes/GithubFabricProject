@@ -248,6 +248,31 @@ Exits the Python interactive prompt and returns to the shell. You can also press
 
 ---
 
+## Natural-language Q&A app (Module 08)
+
+### `streamlit run nl_query/app.py`
+**Shell — from the repo root, requires ANTHROPIC_API_KEY in .env**
+
+Starts the text-to-SQL Streamlit app. Streamlit is a web framework — it launches its
+own web server and serves a browser UI. A browser tab opens automatically at
+`http://localhost:8501`.
+
+**Why `streamlit run` and not `python nl_query/app.py`?**
+`python` would run the file once and exit. `streamlit run` keeps the server running,
+handles hot-reload when you edit the file, and provides the layout engine (columns,
+expanders, charts). The two commands are different entry points for different purposes.
+
+**What goes wrong:** Running from inside `nl_query/` instead of the repo root — the
+app uses relative paths to find `dbt/sp500_analytics/target/catalog.json`, so it
+must be launched from the project root. Also: forgetting to run `dbt docs generate
+--target duckdb` first means `catalog.json` is missing and the app falls back to a
+static schema description (still works, but the LLM won't know your exact column names
+and descriptions).
+
+Press `Ctrl+C` in PowerShell to stop the app when done.
+
+---
+
 ## git commands
 
 ### `git status`
@@ -274,6 +299,7 @@ the most recent commit should match what was pushed from the cloud.
 | `python -m scripts.*` | repo root (`C:\dev\GithubFabricProject`) |
 | `python -m ingestion.*` | repo root |
 | `python -m extraction.*` | repo root |
+| `streamlit run nl_query/app.py` | repo root |
 | `dbt *` | `dbt\sp500_analytics\` |
 | `git *` | repo root (or anywhere inside the repo) |
 | `python` (interactive) | anywhere |
