@@ -31,6 +31,9 @@ data/
 
 # Power BI temp
 *.pbix.tmp
+.pbi/localSettings.json
+*/.pbi/localSettings.json
+*/.pbi/cache.abf
 
 # OS / editors
 .DS_Store
