@@ -117,6 +117,11 @@ table mart_ai_commitments
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'Total AI Committed' =
+			SUM(mart_ai_commitments[amount_usd])
+		formatString: \$#,0.##;(\$#,0.##);\$#,0.##
+		lineageTag: fe613170-2812-4a9a-9ef4-7885b003931a
+
 	partition mart_ai_commitments = m
 		mode: import
 		source =

@@ -100,6 +100,14 @@ table mart_prices
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'Latest Close' =
+			CALCULATE(
+			    LASTNONBLANK(mart_prices[close], 1),
+			    ALLEXCEPT(mart_prices, mart_prices[ticker])
+			)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 0aa9a4a1-abf6-427f-a763-586feee542f6
+
 	partition mart_prices = m
 		mode: import
 		source =
