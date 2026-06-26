@@ -1,6 +1,20 @@
 version: 2
 
 models:
+  - name: dim_tickers
+    description: >
+      Gold dimension: one row per company (ticker). The hub of the star schema —
+      every fact mart relates many-to-one to this table on `ticker`. Built in the
+      warehouse so Fabric Direct Lake reads it as a native Delta table.
+    columns:
+      - name: ticker
+        description: "Stock ticker symbol — the dimension key."
+        data_tests: [not_null, unique]
+      - name: company_name
+        description: "Company display name."
+      - name: gics_sector
+        description: "GICS sector for slicing/grouping."
+
   - name: mart_fundamentals
     description: >
       Gold mart: one row per company per fiscal period with canonical financial
