@@ -21,8 +21,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 try:
+    from nl_query.ontology import build_ontology_context
     from nl_query.schema_context import allowed_tables, build_schema_context
 except ImportError:
+    from ontology import build_ontology_context  # type: ignore[no-redef]
     from schema_context import allowed_tables, build_schema_context  # type: ignore[no-redef]
 
 MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
@@ -34,15 +36,24 @@ DuckDB warehouse. Rules:
 - Output ONLY the SQL, no prose, no markdown fences.
 - SELECT statements only. Never write INSERT/UPDATE/DELETE/DROP/ALTER/CREATE.
 - Prefer explicit column lists and add LIMIT 1000 unless the question implies otherwise.
+- Follow the semantic layer below: use its relationships for joins and its metric
+  glossary for any business term (margins, growth, intensity, outperform, etc.).
 
 Schema:
-{schema}"""
+{schema}
+
+Semantic layer:
+{ontology}"""
 
 FORBIDDEN = re.compile(r"\b(insert|update|delete|drop|alter|create|attach|copy|pragma)\b", re.I)
 
 
 def generate_sql(client: Anthropic, question: str, schema: str) -> str:
-    system = SQL_SYSTEM_PROMPT.format(tables=", ".join(sorted(allowed_tables())), schema=schema)
+    system = SQL_SYSTEM_PROMPT.format(
+        tables=", ".join(sorted(allowed_tables())),
+        schema=schema,
+        ontology=build_ontology_context(),
+    )
     msg = client.messages.create(
         model=MODEL,
         max_tokens=800,
