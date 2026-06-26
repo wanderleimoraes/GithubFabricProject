@@ -11,6 +11,92 @@
   },
   "visual": {
     "visualType": "deneb7E15AEF80B9E4D4F8E12924291ECE89A",
-    "drillFilterOtherVisuals": true
+    "drillFilterOtherVisuals": true,
+    "query": {
+      "queryState": {
+        "dataset": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_prices"
+                    }
+                  },
+                  "Property": "trade_date"
+                }
+              },
+              "queryRef": "mart_prices.trade_date",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_prices"
+                    }
+                  },
+                  "Property": "close"
+                }
+              },
+              "queryRef": "mart_prices.close",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_prices"
+                    }
+                  },
+                  "Property": "ma_50"
+                }
+              },
+              "queryRef": "mart_prices.ma_50",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_prices"
+                    }
+                  },
+                  "Property": "ma_200"
+                }
+              },
+              "queryRef": "mart_prices.ma_200",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "vega": [
+        {
+          "properties": {
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'vegaLite'"
+                }
+              }
+            },
+            "jsonSpec": {
+              "expr": {
+                "Literal": {
+                  "Value": "'{\"$schema\":\"https://vega.github.io/schema/vega-lite/v5.json\",\"data\":{\"name\":\"dataset\"},\"encoding\":{\"x\":{\"field\":\"trade_date\",\"type\":\"temporal\",\"title\":\"Date\",\"axis\":{\"format\":\"%b %Y\",\"labelAngle\":-45}}},\"layer\":[{\"mark\":{\"type\":\"line\",\"color\":\"#4c78a8\",\"strokeWidth\":2},\"encoding\":{\"y\":{\"field\":\"close\",\"type\":\"quantitative\",\"title\":\"Price (USD)\"},\"tooltip\":[{\"field\":\"trade_date\",\"type\":\"temporal\",\"title\":\"Date\",\"format\":\"%Y-%m-%d\"},{\"field\":\"close\",\"type\":\"quantitative\",\"title\":\"Close\",\"format\":\"$.2f\"},{\"field\":\"ma_50\",\"type\":\"quantitative\",\"title\":\"MA 50\",\"format\":\"$.2f\"},{\"field\":\"ma_200\",\"type\":\"quantitative\",\"title\":\"MA 200\",\"format\":\"$.2f\"}]}},{\"mark\":{\"type\":\"line\",\"color\":\"#f58518\",\"strokeDash\":[6,3],\"strokeWidth\":1.5},\"encoding\":{\"y\":{\"field\":\"ma_50\",\"type\":\"quantitative\"}}},{\"mark\":{\"type\":\"line\",\"color\":\"#e45756\",\"strokeDash\":[2,3],\"strokeWidth\":1.5},\"encoding\":{\"y\":{\"field\":\"ma_200\",\"type\":\"quantitative\"}}}],\"config\":{\"background\":\"transparent\",\"view\":{\"stroke\":\"transparent\"},\"axis\":{\"gridColor\":\"#e0e0e0\",\"domainColor\":\"#888\"}}}'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
   }
 }
