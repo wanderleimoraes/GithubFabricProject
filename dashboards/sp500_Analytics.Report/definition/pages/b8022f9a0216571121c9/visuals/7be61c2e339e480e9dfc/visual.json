@@ -26,7 +26,8 @@
                   "Property": "company_name"
                 }
               },
-              "queryRef": "mart_ai_commitments.company_name"
+              "queryRef": "mart_ai_commitments.company_name",
+              "active": true
             }
           ]
         },
