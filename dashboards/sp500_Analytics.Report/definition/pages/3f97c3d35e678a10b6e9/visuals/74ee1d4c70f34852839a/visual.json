@@ -18,7 +18,11 @@
             {
               "field": {
                 "Measure": {
-                  "Expression": { "SourceRef": { "Entity": "mart_ai_commitments" } },
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_commitments"
+                    }
+                  },
                   "Property": "Total AI Committed"
                 }
               },

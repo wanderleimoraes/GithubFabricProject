@@ -18,7 +18,11 @@
             {
               "field": {
                 "Measure": {
-                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
                   "Property": "Material Fact Count"
                 }
               },

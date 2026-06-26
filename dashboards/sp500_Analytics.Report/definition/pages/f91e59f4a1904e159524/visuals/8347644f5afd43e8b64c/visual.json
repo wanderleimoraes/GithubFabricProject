@@ -18,7 +18,11 @@
             {
               "field": {
                 "Column": {
-                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
                   "Property": "fact_date"
                 }
               },
@@ -27,7 +31,11 @@
             {
               "field": {
                 "Column": {
-                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
                   "Property": "ticker"
                 }
               },
@@ -36,7 +44,11 @@
             {
               "field": {
                 "Column": {
-                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
                   "Property": "company_name"
                 }
               },
@@ -45,7 +57,11 @@
             {
               "field": {
                 "Column": {
-                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
                   "Property": "category"
                 }
               },
@@ -54,7 +70,11 @@
             {
               "field": {
                 "Column": {
-                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
                   "Property": "headline"
                 }
               },
@@ -63,7 +83,11 @@
             {
               "field": {
                 "Column": {
-                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
                   "Property": "fact_text"
                 }
               },
@@ -72,7 +96,11 @@
             {
               "field": {
                 "Column": {
-                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
                   "Property": "significance"
                 }
               },
@@ -81,7 +109,11 @@
             {
               "field": {
                 "Column": {
-                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
                   "Property": "source_url"
                 }
               },

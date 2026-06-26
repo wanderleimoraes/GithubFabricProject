@@ -1,6 +1,14 @@
 table mart_ai_material_facts
 	lineageTag: d883d0fa-fe8c-49db-9626-872783de6350
 
+	measure 'Material Fact Count' = COUNTROWS(mart_ai_material_facts)
+		formatString: #,0
+		lineageTag: 7c1f0a2b-3d4e-4f50-9a61-2b3c4d5e6f70
+
+	measure 'Quantified AI $' = SUM(mart_ai_material_facts[amount_usd])
+		formatString: \$#,0.##;(\$#,0.##);\$#,0.##
+		lineageTag: 8d2e1b3c-4e5f-4061-ab72-3c4d5e6f7081
+
 	column ticker
 		dataType: string
 		lineageTag: 2c32921b-4e96-4196-88ab-5ddba02c7e2a
@@ -126,20 +134,12 @@ table mart_ai_material_facts
 
 	column source_url
 		dataType: string
-		dataCategory: WebUrl
 		lineageTag: fe882358-c88e-41dd-8b8d-4f82bba52805
+		dataCategory: WebUrl
 		summarizeBy: none
 		sourceColumn: source_url
 
 		annotation SummarizationSetBy = Automatic
-
-	measure 'Material Fact Count' = COUNTROWS(mart_ai_material_facts)
-		formatString: #,0
-		lineageTag: 7c1f0a2b-3d4e-4f50-9a61-2b3c4d5e6f70
-
-	measure 'Quantified AI $' = SUM(mart_ai_material_facts[amount_usd])
-		formatString: \$#,0.##;(\$#,0.##);\$#,0.##
-		lineageTag: 8d2e1b3c-4e5f-4061-ab72-3c4d5e6f7081
 
 	partition mart_ai_material_facts = m
 		mode: import

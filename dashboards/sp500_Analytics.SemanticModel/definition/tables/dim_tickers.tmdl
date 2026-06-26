@@ -1,6 +1,10 @@
 table dim_tickers
 	lineageTag: 14e981c3-48b8-481a-993f-ad0937961d40
 
+	measure 'Company Count' = COUNTROWS(dim_tickers)
+		formatString: #,0
+		lineageTag: 9a1b2c3d-4e5f-4061-b273-1a2b3c4d5e6f
+
 	column ticker
 		dataType: string
 		lineageTag: fb815d2d-973d-4332-9ba9-bef080f41469
@@ -40,10 +44,6 @@ table dim_tickers
 		sourceColumn: cik
 
 		annotation SummarizationSetBy = Automatic
-
-	measure 'Company Count' = COUNTROWS(dim_tickers)
-		formatString: #,0
-		lineageTag: 9a1b2c3d-4e5f-4061-b273-1a2b3c4d5e6f
 
 	partition dim_tickers = m
 		mode: import

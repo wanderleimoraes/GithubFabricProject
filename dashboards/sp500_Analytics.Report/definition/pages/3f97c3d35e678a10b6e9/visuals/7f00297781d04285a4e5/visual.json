@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
   "name": "7f00297781d04285a4e5",
   "position": {
-    "x": 40,
+    "x": 0,
     "y": 160,
     "z": 0,
-    "height": 150,
-    "width": 380,
+    "height": 150.2608695652174,
+    "width": 379.82608695652175,
     "tabOrder": 1
   },
   "visual": {
@@ -18,7 +18,11 @@
             {
               "field": {
                 "Measure": {
-                  "Expression": { "SourceRef": { "Entity": "dim_tickers" } },
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_tickers"
+                    }
+                  },
                   "Property": "Company Count"
                 }
               },

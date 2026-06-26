@@ -1,0 +1,78 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "aa0cbd70fe8a0febfa36",
+  "position": {
+    "x": 0,
+    "y": 311.82230714115121,
+    "z": 1,
+    "height": 215.21853355624552,
+    "width": 711.68855982803916,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Ask the data yourself",
+                    "textStyle": {
+                      "fontSize": "14pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "You've seen the story — fundamentals, AI commitments, material facts, prices. Now query it in plain language."
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Try asking:"
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• \"Top 5 companies by R&D intensity last fiscal year\""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• \"Total AI committed by sector\""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• \"Most significant AI partnership facts in the last 5 years, with sources\""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• \"Do companies with higher R&D intensity make larger AI commitments?\""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
