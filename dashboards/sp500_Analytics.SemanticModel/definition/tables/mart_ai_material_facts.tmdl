@@ -1,0 +1,149 @@
+table mart_ai_material_facts
+	lineageTag: d883d0fa-fe8c-49db-9626-872783de6350
+
+	column ticker
+		dataType: string
+		lineageTag: 2c32921b-4e96-4196-88ab-5ddba02c7e2a
+		summarizeBy: none
+		sourceColumn: ticker
+
+		annotation SummarizationSetBy = Automatic
+
+	column company_name
+		dataType: string
+		lineageTag: 836e9196-6c76-4b3c-a9a1-60f3691dbe02
+		summarizeBy: none
+		sourceColumn: company_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column gics_sector
+		dataType: string
+		lineageTag: 95f9b39e-8fde-47a5-8c01-a35973704d0d
+		summarizeBy: none
+		sourceColumn: gics_sector
+
+		annotation SummarizationSetBy = Automatic
+
+	column fact_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: bebb48eb-72ca-42cd-bc32-666a9021d114
+		summarizeBy: none
+		sourceColumn: fact_date
+
+		variation Variation
+			isDefault
+			relationship: 008a6c55-83c4-4bed-821d-4a2b7e9aa488
+			defaultHierarchy: LocalDateTable_fb67ed77-1851-4766-82b7-02aee61c51de.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column fact_year
+		dataType: int64
+		formatString: 0
+		lineageTag: cab3489d-a16b-48d7-b223-e49403958b38
+		summarizeBy: sum
+		sourceColumn: fact_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column headline
+		dataType: string
+		lineageTag: a8d5f7ed-f980-44eb-ae5c-65f93c46baae
+		summarizeBy: none
+		sourceColumn: headline
+
+		annotation SummarizationSetBy = Automatic
+
+	column fact_text
+		dataType: string
+		lineageTag: 20ac7cce-e49b-4030-a79c-a9403c1a89b4
+		summarizeBy: none
+		sourceColumn: fact_text
+
+		annotation SummarizationSetBy = Automatic
+
+	column context
+		dataType: string
+		lineageTag: fc5bdd31-ab14-483d-b771-fb518c812b02
+		summarizeBy: none
+		sourceColumn: context
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: 8e54066a-7fcd-4e1a-99ab-cc8b06d978aa
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column amount_usd
+		dataType: double
+		lineageTag: a7735f9c-dd3e-42be-a0a0-01ae4293996f
+		summarizeBy: sum
+		sourceColumn: amount_usd
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column significance
+		dataType: string
+		lineageTag: d903f0ef-64e8-4a24-ae04-4b87ea4df884
+		summarizeBy: none
+		sourceColumn: significance
+
+		annotation SummarizationSetBy = Automatic
+
+	column form
+		dataType: string
+		lineageTag: da16116a-bf9e-4bf9-9ae7-8a69be06a2a9
+		summarizeBy: none
+		sourceColumn: form
+
+		annotation SummarizationSetBy = Automatic
+
+	column filing_item
+		dataType: string
+		lineageTag: 59e3b3a7-98d0-47e1-87d3-14cd6ea39659
+		summarizeBy: none
+		sourceColumn: filing_item
+
+		annotation SummarizationSetBy = Automatic
+
+	column accession_number
+		dataType: string
+		lineageTag: 67f23abf-2121-449f-ad89-d595306e6899
+		summarizeBy: none
+		sourceColumn: accession_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column source_url
+		dataType: string
+		lineageTag: fe882358-c88e-41dd-8b8d-4f82bba52805
+		summarizeBy: none
+		sourceColumn: source_url
+
+		annotation SummarizationSetBy = Automatic
+
+	partition mart_ai_material_facts = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405618743944849.9.azuredatabricks.net", "/sql/1.0/warehouses/4dbe468336982c0d", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    sp500_Database = Source{[Name="sp500",Kind="Database"]}[Data],
+				    gold_Schema = sp500_Database{[Name="gold",Kind="Schema"]}[Data],
+				    mart_ai_material_facts_Table = gold_Schema{[Name="mart_ai_material_facts",Kind="Table"]}[Data]
+				in
+				    mart_ai_material_facts_Table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

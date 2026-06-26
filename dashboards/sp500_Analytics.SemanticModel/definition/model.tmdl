@@ -8,7 +8,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
-annotation PBI_QueryOrder = ["mart_ai_commitments","mart_ai_events","mart_fundamentals","mart_prices","dim_tickers"]
+annotation PBI_QueryOrder = ["mart_ai_commitments","mart_ai_events","mart_fundamentals","mart_prices","dim_tickers","mart_ai_material_facts"]
 
 annotation PBI_ProTooling = ["DevMode"]
 
@@ -22,6 +22,8 @@ ref table LocalDateTable_1137b2bf-9c6f-4c19-b769-a3fb60a8a4ad
 ref table mart_prices
 ref table LocalDateTable_1836987c-f8c8-4488-aa86-be347c78a71a
 ref table dim_tickers
+ref table mart_ai_material_facts
+ref table LocalDateTable_fb67ed77-1851-4766-82b7-02aee61c51de
 
 ref cultureInfo en-US
 

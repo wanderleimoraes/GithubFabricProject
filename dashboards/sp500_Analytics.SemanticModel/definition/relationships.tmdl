@@ -32,3 +32,12 @@ relationship AutoDetected_1ad9ac98-1982-43de-a94a-9c874cb6f10c
 	fromColumn: mart_prices.ticker
 	toColumn: dim_tickers.ticker
 
+relationship 008a6c55-83c4-4bed-821d-4a2b7e9aa488
+	joinOnDateBehavior: datePartOnly
+	fromColumn: mart_ai_material_facts.fact_date
+	toColumn: LocalDateTable_fb67ed77-1851-4766-82b7-02aee61c51de.Date
+
+relationship 718068bb-b32f-408a-4816-75e6e20331ee
+	fromColumn: mart_ai_material_facts.ticker
+	toColumn: dim_tickers.ticker
+

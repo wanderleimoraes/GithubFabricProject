@@ -4,8 +4,8 @@
     {
       "ordinal": 0,
       "scrollPosition": {
-        "x": 0,
-        "y": 0
+        "x": 334.00001525878906,
+        "y": 53.000001907348633
       },
       "nodes": [
         {
@@ -69,6 +69,19 @@
           "nodeLineageTag": "14e981c3-48b8-481a-993f-ad0937961d40",
           "size": {
             "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1138.5,
+            "y": 0
+          },
+          "nodeIndex": "mart_ai_material_facts",
+          "nodeLineageTag": "d883d0fa-fe8c-49db-9626-872783de6350",
+          "size": {
+            "height": 300,
             "width": 234
           },
           "zIndex": 0
