@@ -1,0 +1,95 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "8347644f5afd43e8b64c",
+  "position": {
+    "x": 20,
+    "y": 360,
+    "z": 0,
+    "height": 340,
+    "width": 1240,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Property": "fact_date"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.fact_date"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Property": "ticker"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.ticker"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Property": "company_name"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.company_name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Property": "category"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.category"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Property": "headline"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.headline"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Property": "fact_text"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.fact_text"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Property": "significance"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.significance"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": { "SourceRef": { "Entity": "mart_ai_material_facts" } },
+                  "Property": "source_url"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.source_url"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

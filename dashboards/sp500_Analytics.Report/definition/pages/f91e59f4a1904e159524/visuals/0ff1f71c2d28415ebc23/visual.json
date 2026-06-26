@@ -1,0 +1,70 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "0ff1f71c2d28415ebc23",
+  "position": {
+    "x": 20,
+    "y": 100,
+    "z": 0,
+    "height": 240,
+    "width": 1240,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "stackedColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
+                  "Property": "fact_year"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.fact_year"
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
+                  "Property": "category"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.category"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
+                  "Property": "Material Fact Count"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.Material Fact Count"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
