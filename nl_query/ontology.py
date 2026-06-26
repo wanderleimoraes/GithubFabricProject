@@ -100,6 +100,55 @@ WHERE daily_return > (
     WHERE peers.gics_sector = l.gics_sector
 )
 ORDER BY gics_sector, daily_return DESC;
+
+Q: Which companies committed the most to AI relative to their revenue?
+SQL:
+SELECT ticker, company_name, amount_usd, latest_revenue, commitment_to_revenue_ratio
+FROM mart_ai_commitments
+WHERE commitment_to_revenue_ratio IS NOT NULL
+ORDER BY commitment_to_revenue_ratio DESC
+LIMIT 10;
+
+Q: For companies that announced an AI commitment, what is their latest net margin?
+SQL:
+WITH latest_fund AS (
+    SELECT ticker, net_margin,
+           ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY period_end DESC) AS rn
+    FROM mart_fundamentals
+)
+SELECT c.ticker, c.company_name, c.amount_usd, f.net_margin
+FROM mart_ai_commitments c
+JOIN latest_fund f ON c.ticker = f.ticker AND f.rn = 1
+ORDER BY c.amount_usd DESC;
+
+Q: Highest-confidence AI commitments over $1 billion.
+SQL:
+SELECT ticker, company_name, event_date, amount_usd, confidence, commitment_text
+FROM mart_ai_commitments
+WHERE amount_usd >= 1000000000 AND confidence >= 0.8
+ORDER BY amount_usd DESC;
+
+Q: Total AI committed per calendar year.
+SQL:
+SELECT EXTRACT(year FROM event_date) AS commit_year,
+       SUM(amount_usd) AS total_committed
+FROM mart_ai_commitments
+GROUP BY commit_year
+ORDER BY commit_year;
+
+Q: Do companies with higher R&D intensity also make larger AI commitments?
+SQL:
+WITH latest_fund AS (
+    SELECT ticker, rnd_intensity,
+           ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY period_end DESC) AS rn
+    FROM mart_fundamentals
+)
+SELECT c.ticker, c.company_name, f.rnd_intensity,
+       SUM(c.amount_usd) AS total_ai_committed
+FROM mart_ai_commitments c
+JOIN latest_fund f ON c.ticker = f.ticker AND f.rn = 1
+GROUP BY c.ticker, c.company_name, f.rnd_intensity
+ORDER BY total_ai_committed DESC;
 """.strip()
 
 
