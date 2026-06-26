@@ -1,0 +1,53 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "7be61c2e339e480e9dfc",
+  "position": {
+    "x": 340,
+    "y": 100,
+    "z": 0,
+    "height": 280,
+    "width": 920,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_commitments"
+                    }
+                  },
+                  "Property": "company_name"
+                }
+              },
+              "queryRef": "mart_ai_commitments.company_name"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_commitments"
+                    }
+                  },
+                  "Property": "Total AI Committed"
+                }
+              },
+              "queryRef": "mart_ai_commitments.Total AI Committed"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

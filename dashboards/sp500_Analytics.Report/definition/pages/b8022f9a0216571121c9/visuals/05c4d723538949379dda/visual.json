@@ -1,0 +1,88 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "05c4d723538949379dda",
+  "position": {
+    "x": 20,
+    "y": 400,
+    "z": 0,
+    "height": 300,
+    "width": 1240,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_commitments"
+                    }
+                  },
+                  "Property": "company_name"
+                }
+              },
+              "queryRef": "mart_ai_commitments.company_name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_commitments"
+                    }
+                  },
+                  "Property": "event_date"
+                }
+              },
+              "queryRef": "mart_ai_commitments.event_date"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_commitments"
+                    }
+                  },
+                  "Property": "commitment_text"
+                }
+              },
+              "queryRef": "mart_ai_commitments.commitment_text"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_commitments"
+                    }
+                  },
+                  "Property": "amount_usd"
+                }
+              },
+              "queryRef": "mart_ai_commitments.amount_usd"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_commitments"
+                    }
+                  },
+                  "Property": "confidence"
+                }
+              },
+              "queryRef": "mart_ai_commitments.confidence"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
