@@ -245,6 +245,109 @@ each is committed to git **before** Part F:
 
 ---
 
+## Part G — Conversational NL Q&A: the report's destination
+
+The report is a **narrative**: pages 1–3 tell the story (fundamentals → AI commitments
+→ price & events), and the final page hands the reader the keys — a place where *they*
+ask their own questions in plain language. This section is the blueprint for that
+endpoint. Most of it is gated on Fabric capacity (the pending support ticket), so it's
+documented here and built when the capacity lands.
+
+### The two layers (don't conflate them)
+
+An "ask it yourself" experience has two separable layers:
+
+| Layer | What it is | Options |
+|-------|-----------|---------|
+| **Engine** | The brain that understands the data and answers | Fabric Data Agent (GPT) grounded on an **Ontology**, *or* a custom Claude text-to-SQL app |
+| **Surface** | Where the user types the question | **Copilot** in Power BI (native), *or* **Claude** via MCP, *or* the Streamlit chat box |
+
+The engine and surface are independent — the same ontology-grounded engine can be reached
+from multiple surfaces.
+
+### The ontology (Fabric IQ)
+
+[Fabric IQ Ontology](https://learn.microsoft.com/en-us/fabric/iq/ontology/overview) (Preview)
+is Microsoft's semantic layer: it models **entity types** (Company, Commitment, Filing),
+**properties**, and **relationships** ("Company *files* an 8-K"), then **binds** them to
+data in OneLake. Crucially, you can
+[**generate an ontology from a Power BI semantic model**](https://learn.microsoft.com/en-us/fabric/iq/ontology/concepts-generate) —
+so our existing star schema (`dim_tickers` + four marts), relationships, and DAX measures
+become the seed. The ontology is what lets the agent answer *complex* questions
+(multi-table, comparative, temporal) reliably instead of guessing joins.
+
+### The engine: Fabric Data Agent
+
+A [Fabric Data Agent](https://learn.microsoft.com/en-us/fabric/data-science/concept-data-agent)
+runs on **Azure OpenAI GPT models hosted in Fabric** (currently `gpt-5.1` / `gpt-5-mini`) —
+*not* Claude. Copilot in Power BI is the same GPT lineage. The agent reasons over the
+ontology to answer questions grounded in our defined entities and relationships.
+
+### Reaching it with Claude (via MCP)
+
+The data agent can be published as an
+[**MCP server**](https://learn.microsoft.com/en-us/fabric/data-science/data-agent-mcp-server)
+(Preview). That makes the GPT-powered, ontology-grounded agent a **tool** that *Claude*
+(Claude Code / Claude Desktop / our own app) can call. So a user asks Claude → Claude calls
+the Fabric data agent → the agent reasons over the ontology → returns a grounded answer.
+This is the more impressive engineering story: *"I exposed my Fabric data agent over MCP
+and drove it with Claude."*
+
+### Using `microsoft/skills-for-fabric` in our favour
+
+[`microsoft/skills-for-fabric`](https://github.com/microsoft/skills-for-fabric) is two
+things in one repo — treat them separately:
+
+1. **Skills + `CLAUDE.md` (knowledge — works today, no Fabric needed).** Reusable AI
+   instructions for Fabric (REST API patterns, T-SQL/KQL, medallion design, Power BI
+   workflows). When Claude Code runs inside the cloned repo, its `CLAUDE.md` loads
+   automatically, giving Claude expert Fabric context. Use this **now** while we author
+   TMDL, plan the ontology, and design the agent — it makes Claude a better Fabric builder
+   at zero cost.
+
+   ```bash
+   git clone https://github.com/microsoft/skills-for-fabric.git
+   # then run Claude Code from inside that folder for Fabric-specific work,
+   # or copy its CLAUDE.md / relevant skills into this project as reference.
+   ```
+
+2. **Live MCP wiring (action — needs Fabric capacity + `az login`).** Connects Claude to a
+   live Fabric MCP server (REST APIs, or the data-agent MCP server) for real queries.
+
+   ```bash
+   az login
+   az account get-access-token --resource https://api.fabric.microsoft.com
+   ```
+
+   Then register the Fabric MCP server (bearer-token pattern in the client's `mcp.json`):
+
+   ```json
+   {
+     "mcpServers": {
+       "fabric": {
+         "url": "https://<your-fabric-mcp-server>",
+         "transport": "http",
+         "auth": { "type": "bearer", "token": "${FABRIC_MCP_TOKEN}" }
+       }
+     }
+   }
+   ```
+
+   > Note: this wiring runs on **your laptop** (it needs `az login` and network access to
+   > your Fabric workspace), not the cloud build session.
+
+### Build sequence
+
+| Phase | State | Endpoint |
+|-------|-------|----------|
+| **Now** | No Fabric capacity | Streamlit text-to-SQL app (Claude engine, runs against Databricks). 4th report page = launchpad (Smart Narrative recap + link to the live app). |
+| **When Fabric lands** | F2 capacity active | Mirror `sp500` catalog → generate **Ontology** from the semantic model → stand up a **Fabric Data Agent** → reach it via **Copilot** (native) *and* **Claude over MCP**. 4th page repoints to the native experience. |
+
+The narrative is unchanged across phases: pages 1–3 tell the story, page 4 hands over the
+keys. Only the engine behind the keys gets upgraded.
+
+---
+
 ## Part F — Teardown checklist (before 2026-07-24)
 
 Delete in this order to stop all billing. Even with credit, leaving resources up past
