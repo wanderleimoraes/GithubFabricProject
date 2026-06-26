@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
   "name": "230d0a95782b0f55dcad",
   "position": {
-    "x": 9.6055210305030236,
+    "x": 9.605521030503024,
     "y": 0,
     "z": 0,
-    "height": 720.41407728772685,
+    "height": 720.4140772877269,
     "width": 1270.6732106065429,
     "tabOrder": 0
   },
@@ -90,7 +90,7 @@
             "jsonSpec": {
               "expr": {
                 "Literal": {
-                  "Value": "'{\"$schema\":\"https://vega.github.io/schema/vega-lite/v5.json\",\"data\":{\"name\":\"dataset\"},\"encoding\":{\"x\":{\"field\":\"trade_date\",\"type\":\"temporal\",\"title\":\"Date\",\"axis\":{\"format\":\"%b %Y\",\"labelAngle\":-45}}},\"layer\":[{\"mark\":{\"type\":\"line\",\"color\":\"#4c78a8\",\"strokeWidth\":2},\"encoding\":{\"y\":{\"field\":\"close\",\"type\":\"quantitative\",\"title\":\"Price (USD)\"},\"tooltip\":[{\"field\":\"trade_date\",\"type\":\"temporal\",\"title\":\"Date\",\"format\":\"%Y-%m-%d\"},{\"field\":\"close\",\"type\":\"quantitative\",\"title\":\"Close\",\"format\":\"$.2f\"},{\"field\":\"ma_50\",\"type\":\"quantitative\",\"title\":\"MA 50\",\"format\":\"$.2f\"},{\"field\":\"ma_200\",\"type\":\"quantitative\",\"title\":\"MA 200\",\"format\":\"$.2f\"}]}},{\"mark\":{\"type\":\"line\",\"color\":\"#f58518\",\"strokeDash\":[6,3],\"strokeWidth\":1.5},\"encoding\":{\"y\":{\"field\":\"ma_50\",\"type\":\"quantitative\"}}},{\"mark\":{\"type\":\"line\",\"color\":\"#e45756\",\"strokeDash\":[2,3],\"strokeWidth\":1.5},\"encoding\":{\"y\":{\"field\":\"ma_200\",\"type\":\"quantitative\"}}}],\"config\":{\"background\":\"transparent\",\"view\":{\"stroke\":\"transparent\"},\"axis\":{\"gridColor\":\"#e0e0e0\",\"domainColor\":\"#888\"}}}'"
+                  "Value": "'{\"$schema\":\"https://vega.github.io/schema/vega-lite/v5.json\",\"data\":{\"name\":\"dataset\"},\"encoding\":{\"x\":{\"field\":\"trade_date\",\"type\":\"temporal\",\"title\":\"Date\",\"axis\":{\"format\":\"%b %Y\",\"labelAngle\":-45}}},\"layer\":[{\"mark\":{\"type\":\"line\",\"color\":\"#4c78a8\",\"strokeWidth\":2},\"encoding\":{\"y\":{\"field\":\"close\",\"type\":\"quantitative\",\"title\":\"Price (USD)\"}}},{\"mark\":{\"type\":\"line\",\"color\":\"#f58518\",\"strokeDash\":[6,3],\"strokeWidth\":1.5},\"encoding\":{\"y\":{\"field\":\"ma_50\",\"type\":\"quantitative\"}}},{\"mark\":{\"type\":\"line\",\"color\":\"#e45756\",\"strokeDash\":[2,3],\"strokeWidth\":1.5},\"encoding\":{\"y\":{\"field\":\"ma_200\",\"type\":\"quantitative\"}}},{\"mark\":{\"type\":\"rule\",\"color\":\"#888\",\"strokeWidth\":1},\"encoding\":{\"opacity\":{\"condition\":{\"value\":0.4,\"param\":\"hover\",\"empty\":false},\"value\":0},\"tooltip\":[{\"field\":\"trade_date\",\"type\":\"temporal\",\"title\":\"Date\",\"format\":\"%Y-%m-%d\"},{\"field\":\"close\",\"type\":\"quantitative\",\"title\":\"Close\",\"format\":\"$.2f\"},{\"field\":\"ma_50\",\"type\":\"quantitative\",\"title\":\"MA 50\",\"format\":\"$.2f\"},{\"field\":\"ma_200\",\"type\":\"quantitative\",\"title\":\"MA 200\",\"format\":\"$.2f\"}]},\"params\":[{\"name\":\"hover\",\"select\":{\"type\":\"point\",\"fields\":[\"trade_date\"],\"nearest\":true,\"on\":\"pointerover\",\"clear\":\"pointerout\"}}]}],\"config\":{\"background\":\"transparent\",\"view\":{\"stroke\":\"transparent\"},\"axis\":{\"gridColor\":\"#e0e0e0\",\"domainColor\":\"#888\"}}}'"
                 }
               }
             }
