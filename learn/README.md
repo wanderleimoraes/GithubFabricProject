@@ -40,6 +40,11 @@ Every lesson has the same structure:
 Check a box as you finish each module. The foundation modules (00–05) need nothing
 but this environment; we'll decide on local-vs-cloud when we reach module 06.
 
+## Reference
+
+- **[Command Reference](command-reference.md)** — every command used in the modules, with why/where/what-goes-wrong.
+- **[Git Guide](git-guide.md)** — how version control works (the 4-box model), branches, conflicts, the daily routine, and how Bitbucket/GitLab compare.
+
 ## How a session works
 
 1. You open the module file and read the **Concept**.

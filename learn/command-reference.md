@@ -326,6 +326,10 @@ part of the CI green bar.
 
 ## git commands
 
+> For the full picture — the 4-box model (working dir → staging → local repo → remote),
+> branches, conflicts, the daily routine, and how Bitbucket/GitLab compare — see the
+> dedicated [Git Guide](git-guide.md). The entries below are the quick reference.
+
 ### `git status`
 Shows which files have been modified, added, or deleted compared to the last
 commit. Run this before pulling to understand your local state.
