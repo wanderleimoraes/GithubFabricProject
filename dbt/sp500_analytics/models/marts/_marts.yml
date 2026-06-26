@@ -69,3 +69,23 @@ models:
         data_tests: [not_null]
       - name: event_name
         data_tests: [not_null]
+
+  - name: mart_ai_material_facts
+    description: >
+      Gold mart: material AI facts (any level) LLM-extracted from 8-K filings, one
+      fact per row. Rich and source-linked (verbatim text, context, filing item,
+      accession number, source_url) so readers can verify each fact at the source.
+    columns:
+      - name: ticker
+        description: "Company ticker the fact is attributed to."
+        data_tests: [not_null]
+      - name: fact_date
+        description: "Filing date the fact was disclosed."
+        data_tests: [not_null]
+      - name: category
+        description: "partnership / product / infrastructure_capex / acquisition / research / revenue_demand / governance / risk_regulatory / other."
+      - name: significance
+        description: "Analyst-style materiality: high / medium / low."
+      - name: source_url
+        description: "Direct link to the SEC filing document — the reader's primary source."
+        data_tests: [not_null]

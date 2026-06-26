@@ -152,6 +152,20 @@ larger batches (API costs ~$0.01 per filing).
 a few companies are in the file — likely none with AI commitments. Always run
 `edgar_filings` without `--limit` first.
 
+### `python -m extraction.ai_material_facts_extractor [--limit N]`
+**Shell — from repo root, requires ANTHROPIC_API_KEY in .env**
+
+Broader sibling of the commitment extractor. Reads `filings.parquet`, downloads each
+8-K, and asks Claude to extract **any material AI fact** (partnerships, products,
+infrastructure capex, acquisitions, research, revenue/demand, governance,
+risk/regulatory) — not just quantified dollar commitments. Each row is rich and
+**source-linked** (verbatim `fact_text`, `context`, `filing_item`, `accession_number`,
+`source_url`) so a reader can click through to the filing and judge for themselves.
+Writes `ai_material_facts.parquet`, modeled as `mart_ai_material_facts`.
+
+Default `--limit` is 25. Costs ~$0.01–0.02 per filing (a bit more than the commitment
+extractor because the prompt returns more per filing).
+
 ---
 
 ## dbt commands (Modules 02–05)

@@ -38,3 +38,8 @@ sources:
         description: "LLM-extracted AI investment commitments from transcripts/8-Ks."
         meta:
           external_location: "{{ env_var('DATA_DIR', '../../data') }}/bronze/ai_commitments/ai_commitments.parquet"
+
+      - name: ai_material_facts
+        description: "LLM-extracted material AI facts (any level) from 8-K filings, with verbatim text and source links."
+        meta:
+          external_location: "{{ env_var('DATA_DIR', '../../data') }}/bronze/ai_material_facts/ai_material_facts.parquet"

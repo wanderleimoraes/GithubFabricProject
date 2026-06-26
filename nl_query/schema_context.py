@@ -27,6 +27,9 @@ Tables (Gold marts + dimension):
     category, source_url, confidence, latest_revenue, commitment_to_revenue_ratio)
 - mart_ai_events(event_date, vendor, event_name, category, related_ticker,
     significance, url)
+- mart_ai_material_facts(ticker, company_name, gics_sector, fact_date, fact_year,
+    headline, fact_text, context, category, amount_usd, significance, form,
+    filing_item, accession_number, source_url)
 """.strip()
 
 
@@ -62,4 +65,5 @@ def allowed_tables() -> set[str]:
         "mart_prices",
         "mart_ai_commitments",
         "mart_ai_events",
+        "mart_ai_material_facts",
     }

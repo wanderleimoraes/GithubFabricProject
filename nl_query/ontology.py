@@ -27,15 +27,20 @@ Entities (business objects):
   extracted by the LLM layer (mart_ai_commitments, grain = ticker + event_date).
 - AIEvent — an industry-wide AI event for context/overlay, not company-specific
   (mart_ai_events). related_ticker may be null.
+- AIMaterialFact — a material AI fact a Company disclosed in an 8-K, LLM-extracted
+  with verbatim text + source link (mart_ai_material_facts, grain = one fact). Broader
+  than AICommitment: covers partnerships, products, capex, acquisitions, research,
+  revenue/demand, governance, and risk/regulatory — quantified or not.
 """.strip()
 
 RELATIONSHIPS = """
 Relationships (how to join):
-- Company is the hub. Fundamentals, PriceDay and AICommitment each relate
-  many-to-one to Company on `ticker`. Join any fact to dim_tickers on ticker.
+- Company is the hub. Fundamentals, PriceDay, AICommitment and AIMaterialFact each
+  relate many-to-one to Company on `ticker`. Join any fact to dim_tickers on ticker.
 - Because company attributes are denormalized onto the facts, grouping by
-  gics_sector can be done directly on mart_prices / mart_fundamentals; for
-  mart_ai_commitments (no sector column) join dim_tickers to get gics_sector.
+  gics_sector can be done directly on mart_prices / mart_fundamentals /
+  mart_ai_material_facts; for mart_ai_commitments (no sector column) join
+  dim_tickers to get gics_sector.
 - AIEvent is standalone (industry-wide); relate to a Company only via
   related_ticker when it is set.
 - "Sector peers" of a Company = other Companies sharing its gics_sector.
@@ -149,6 +154,22 @@ FROM mart_ai_commitments c
 JOIN latest_fund f ON c.ticker = f.ticker AND f.rn = 1
 GROUP BY c.ticker, c.company_name, f.rnd_intensity
 ORDER BY total_ai_committed DESC;
+
+Q: Show the most significant AI partnership facts in the last 5 years, with their sources.
+SQL:
+SELECT fact_date, ticker, company_name, headline, fact_text, source_url
+FROM mart_ai_material_facts
+WHERE category = 'partnership'
+  AND significance = 'high'
+  AND fact_date >= CURRENT_DATE - INTERVAL 5 YEAR
+ORDER BY fact_date DESC;
+
+Q: How many material AI facts did each company disclose per year, by category?
+SQL:
+SELECT fact_year, ticker, category, COUNT(*) AS fact_count
+FROM mart_ai_material_facts
+GROUP BY fact_year, ticker, category
+ORDER BY fact_year DESC, fact_count DESC;
 """.strip()
 
 
