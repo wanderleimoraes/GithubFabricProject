@@ -29,11 +29,10 @@ data/
 !dbt/**/seeds/*.csv
 *.duckdb
 
-# Power BI temp
+# Power BI temp / local cache & settings (PBIP)
+# `**/.pbi/` matches the .pbi folder at ANY depth (a plain `*/` only matches one level).
 *.pbix.tmp
-.pbi/localSettings.json
-*/.pbi/localSettings.json
-*/.pbi/cache.abf
+**/.pbi/
 
 # OS / editors
 .DS_Store
