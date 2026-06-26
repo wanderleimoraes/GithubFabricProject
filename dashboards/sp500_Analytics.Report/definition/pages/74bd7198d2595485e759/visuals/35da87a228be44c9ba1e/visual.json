@@ -32,20 +32,5 @@
         }
       }
     },
-    "vcObjects": {
-      "title": [
-        {
-          "properties": {
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Net Margin %'"
-                }
-              }
-            }
-          }
-        }
-      ]
-    }
   }
 }

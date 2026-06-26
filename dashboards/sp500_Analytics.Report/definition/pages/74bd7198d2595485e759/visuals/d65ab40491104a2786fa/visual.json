@@ -62,20 +62,5 @@
         }
       }
     },
-    "vcObjects": {
-      "title": [
-        {
-          "properties": {
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Revenue vs Net Income by Year'"
-                }
-              }
-            }
-          }
-        }
-      ]
-    }
   }
 }
