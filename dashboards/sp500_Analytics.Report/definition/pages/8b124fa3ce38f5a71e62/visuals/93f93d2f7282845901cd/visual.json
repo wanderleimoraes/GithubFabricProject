@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
-  "name": "75b76d2d3d86472e969a",
+  "name": "93f93d2f7282845901cd",
   "position": {
     "x": 20,
     "y": 20,
-    "z": 1000,
+    "z": 1,
     "height": 60,
     "width": 1240,
-    "tabOrder": 0
+    "tabOrder": 1
   },
   "visual": {
     "visualType": "slicer",
@@ -94,24 +94,11 @@
           }
         }
       ]
+    },
+    "syncGroup": {
+      "groupName": "ticker",
+      "fieldChanges": true,
+      "filterChanges": true
     }
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "0856f30fd8b94b95ac67",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "dim_tickers"
-              }
-            },
-            "Property": "ticker"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }
