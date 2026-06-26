@@ -166,6 +166,8 @@ layer on top of this project, you can add Fabric later without re-ingesting anyt
   describes the Medallion layers; platform-agnostic by design.
 - [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) — CI always runs on DuckDB;
   cloud targets are for production only.
+- [`docs/cloud-setup.md`](../docs/cloud-setup.md) — the click-by-click provisioning
+  guide for the chosen Option C architecture (Databricks → Fabric → Direct Lake).
 
 ---
 
@@ -221,15 +223,24 @@ For this project's stated goals:
 | $200 Azure credit (new accounts only) | Databricks |
 | Mature dbt adapter | Databricks |
 
-**Recommendation:** Start with **Databricks** using the current repo wiring — the adapter
-is more mature, the repo is already configured, and it's the faster path to a working cloud
-pipeline. Once the pipeline is running and Power BI reports are built (Module 10), evaluate
-adding Fabric as a **Direct Lake endpoint** on top of the same Delta files. You get both:
-Databricks for compute, Fabric for BI and future Ontology work.
+**Decision made: Option C — Databricks + Fabric together.** Databricks runs the
+compute and writes Delta tables; Fabric reads those same files via a OneLake shortcut
+and serves them to Power BI through Direct Lake. This gives both: Databricks for
+compute and Unity Catalog governance, Fabric for fast BI and future Fabric IQ /
+Ontology work — without copying data, because both use Delta Lake on disk.
 
-If you have a Microsoft 365 account and want to skip the Azure credit question entirely,
-starting with Fabric is also valid — add a `fabric` target to `profiles.yml` and proceed.
-Both paths lead to the same dbt models.
+> **Step-by-step provisioning:** see [`docs/cloud-setup.md`](../docs/cloud-setup.md).
+> It's the click-by-click guide for Databricks → Entra ID user → Fabric → OneLake
+> shortcut → Direct Lake, with cost-discipline rules and a teardown checklist.
+
+> **Credit window:** the €200 Azure credit expires **2026-07-24**. The setup guide is
+> structured as a ~3-week sprint so the durable artifacts (`.pbix` files, screenshots,
+> this repo) are captured before the cloud resources are torn down.
+
+**On the personal-email block:** Microsoft Fabric rejects personal Gmail/Outlook
+addresses. Your Azure subscription includes an Entra ID tenant that provides an
+organisational `@*.onmicrosoft.com` account Fabric *does* accept — Part B of the
+setup guide walks through creating it.
 
 ---
 

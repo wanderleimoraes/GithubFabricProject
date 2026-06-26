@@ -1,9 +1,20 @@
 # Minimal profile used by CI (and a good local default). Reads Bronze Parquet via
 # the dbt-duckdb adapter and writes everything into a single local DuckDB file.
+# The `databricks` target is for cloud runs; it reads connection details from
+# environment variables so no secrets live in the repo.
 sp500_analytics:
   target: duckdb
   outputs:
     duckdb:
       type: duckdb
       path: "{{ env_var('DATA_DIR', './data') }}/sp500.duckdb"
+      threads: 4
+
+    databricks:
+      type: databricks
+      catalog: "{{ env_var('DATABRICKS_CATALOG', 'sp500') }}"
+      schema: "{{ env_var('DATABRICKS_SCHEMA', 'gold') }}"
+      host: "{{ env_var('DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
       threads: 4

@@ -312,6 +312,18 @@ corresponding target block in `profiles.yml`.
 
 ---
 
+## CI & orchestration (Module 11)
+
+### `ruff check ingestion extraction nl_query scripts`
+**Shell — from the repo root**
+
+Runs the Python linter across all application code. This is exactly what CI runs on
+every push. Catches unused imports, undefined variables, and style issues before they
+become runtime errors. Fix any warnings before committing — a clean lint check is
+part of the CI green bar.
+
+---
+
 ## git commands
 
 ### `git status`

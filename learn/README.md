@@ -35,7 +35,7 @@ Every lesson has the same structure:
 - [ ] **[08 — Natural-language Q&A](08-natural-language-qa.md)** — text-to-SQL over the marts.
 - [ ] **[09 — Cloud lakehouse: Databricks vs Microsoft Fabric](09-cloud-lakehouse.md)** — the lakehouse in the cloud; compare both platforms and pick one at this cost decision point.
 - [ ] **[10 — Power BI dashboards](10-power-bi-dashboards.md)** — building the four planned reports.
-- [ ] **11 — Orchestration & CI** — scheduling the pipeline; what our CI does.
+- [ ] **[11 — Orchestration & CI](11-orchestration-ci.md)** — scheduling the pipeline; what our CI does.
 
 Check a box as you finish each module. The foundation modules (00–05) need nothing
 but this environment; we'll decide on local-vs-cloud when we reach module 06.
