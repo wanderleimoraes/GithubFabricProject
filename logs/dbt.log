@@ -1,0 +1,13 @@
+[0m17:15:27.533316 [debug] [MainThread]: Got an exception trying to initialize tracking
+
+
+============================== 17:15:27.592989 | 6e769386-8f95-40ee-ba81-97911bcd5729 ==============================
+[0m17:15:27.592989 [info ] [MainThread]: Running with dbt=1.11.11
+[0m17:15:27.592989 [debug] [MainThread]: running dbt with arguments {'static_parser': 'True', 'no_print': 'None', 'version_check': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'None', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': 'C:\\Users\\wande\\.dbt', 'use_colors': 'True', 'invocation_command': 'dbt test --target duckdb', 'indirect_selection': 'eager', 'use_experimental_parser': 'False', 'log_path': 'logs'}
+[0m17:15:27.618136 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path C:\dev\GithubFabricProject\dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m17:15:27.620310 [debug] [MainThread]: Command `dbt test` failed at 17:15:27.619932 after 0.12 seconds
+[0m17:15:27.620310 [debug] [MainThread]: Flushing usage events
