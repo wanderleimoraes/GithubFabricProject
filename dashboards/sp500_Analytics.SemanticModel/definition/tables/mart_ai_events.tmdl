@@ -76,3 +76,7 @@ table mart_ai_events
 				in
 				    mart_ai_events_Table
 
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

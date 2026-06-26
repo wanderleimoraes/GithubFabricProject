@@ -128,3 +128,7 @@ table mart_ai_commitments
 				in
 				    mart_ai_commitments_Table
 
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

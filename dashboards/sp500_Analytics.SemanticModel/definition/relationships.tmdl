@@ -18,3 +18,17 @@ relationship 48c1b420-a9f5-42e4-8af6-aca72a17f390
 	fromColumn: mart_prices.trade_date
 	toColumn: LocalDateTable_1836987c-f8c8-4488-aa86-be347c78a71a.Date
 
+relationship AutoDetected_dc1e0f6a-05c2-4d63-8bd4-b1c6d0b9595a
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: mart_ai_commitments.ticker
+	toColumn: dim_tickers.ticker
+
+relationship AutoDetected_ee048bf1-dc8b-4911-a97e-40d5190ec687
+	fromColumn: mart_fundamentals.ticker
+	toColumn: dim_tickers.ticker
+
+relationship AutoDetected_1ad9ac98-1982-43de-a94a-9c874cb6f10c
+	fromColumn: mart_prices.ticker
+	toColumn: dim_tickers.ticker
+

@@ -215,3 +215,7 @@ table mart_fundamentals
 				in
 				    mart_fundamentals_Table
 
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

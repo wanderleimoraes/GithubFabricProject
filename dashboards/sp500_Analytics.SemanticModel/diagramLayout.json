@@ -59,6 +59,19 @@
             "width": 234
           },
           "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 366,
+            "y": 501.25
+          },
+          "nodeIndex": "dim_tickers",
+          "nodeLineageTag": "14e981c3-48b8-481a-993f-ad0937961d40",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
         }
       ],
       "name": "All tables",
