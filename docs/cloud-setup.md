@@ -118,8 +118,32 @@ dbt build --target databricks
 ```
 
 **✅ Checkpoint + artifact:** in Databricks → **Catalog** → `sp500` → `gold`, you see
-`mart_prices`, `mart_fundamentals`, `mart_ai_commitments`, `mart_ai_events`.
+`dim_tickers`, `mart_prices`, `mart_fundamentals`, `mart_ai_commitments`,
+`mart_ai_events`, `mart_ai_material_facts`.
 **Screenshot this** → save to `dashboards/cloud_unity_catalog.png`.
+
+### A6b. Loading one Bronze table (the concrete recipe)
+
+The Bronze tables were created by uploading each Parquet to a Unity Catalog **volume**
+and running `CREATE TABLE … AS SELECT` over it in the SQL Editor. Use this same recipe
+whenever you add a **new** Bronze source (e.g. `ai_material_facts`):
+
+1. **Upload the file.** Databricks → **Catalog** → `sp500` → `bronze` → **Volumes** →
+   `raw` → **Upload** → pick
+   `data/bronze/ai_material_facts/ai_material_facts.parquet`.
+2. **Create the Delta table** (SQL Editor):
+   ```sql
+   CREATE OR REPLACE TABLE sp500.bronze.ai_material_facts AS
+   SELECT * FROM parquet.`/Volumes/sp500/bronze/raw/ai_material_facts.parquet`;
+   ```
+3. **Rebuild** so the new mart appears:
+   ```powershell
+   dbt build --target databricks --select +mart_ai_material_facts
+   ```
+
+> **Timestamp note:** the nanosecond-timestamp fix (`scripts/convert_bronze_timestamps.py`)
+> is only needed for files with `_ingested_at` (prices, fundamentals, filings).
+> `ai_material_facts` has only date columns, so it loads as-is.
 
 ---
 
