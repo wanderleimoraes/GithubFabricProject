@@ -2,6 +2,7 @@
 .env
 *.env
 !.env.example
+.streamlit/secrets.toml
 
 # Python
 __pycache__/
@@ -28,6 +29,8 @@ data/
 *.parquet
 *.csv
 !dbt/**/seeds/*.csv
+# Bundled sample marts that ship with the deployed Streamlit app (small, public-safe).
+!nl_query/sample_data/*.parquet
 *.duckdb
 
 # Power BI temp / local cache & settings (PBIP)
