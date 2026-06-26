@@ -1,6 +1,22 @@
 table mart_fundamentals
 	lineageTag: 3fa127c9-cd9b-458d-81c8-b6334f25928c
 
+	measure 'Net Margin %' =
+			DIVIDE(
+			    SUM(mart_fundamentals[net_income]),
+			    SUM(mart_fundamentals[revenue])
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 53d80d3e-a024-4b12-ad34-10b25fb2c5d5
+
+	measure 'RnD Intensity %' =
+			DIVIDE(
+			    SUM(mart_fundamentals[rnd_expense]),
+			    SUM(mart_fundamentals[revenue])
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 079a453d-f6bd-4837-8c98-7eb02335edd5
+
 	column ticker
 		dataType: string
 		lineageTag: 0b54d341-6802-48a3-9017-2423e1fb6d75
@@ -203,22 +219,6 @@ table mart_fundamentals
 		annotation SummarizationSetBy = Automatic
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
-	measure 'Net Margin %' =
-			DIVIDE(
-			    SUM(mart_fundamentals[net_income]),
-			    SUM(mart_fundamentals[revenue])
-			)
-		formatString: 0.00%;-0.00%;0.00%
-		lineageTag: 53d80d3e-a024-4b12-ad34-10b25fb2c5d5
-
-	measure 'RnD Intensity %' =
-			DIVIDE(
-			    SUM(mart_fundamentals[rnd_expense]),
-			    SUM(mart_fundamentals[revenue])
-			)
-		formatString: 0.00%;-0.00%;0.00%
-		lineageTag: 079a453d-f6bd-4837-8c98-7eb02335edd5
 
 	partition mart_fundamentals = m
 		mode: import

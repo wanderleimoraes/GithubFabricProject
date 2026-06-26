@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.2.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
   "name": "d65ab40491104a2786fa",
   "position": {
     "x": 20,
@@ -26,7 +26,8 @@
                   "Property": "fiscal_year"
                 }
               },
-              "queryRef": "mart_fundamentals.fiscal_year"
+              "queryRef": "mart_fundamentals.fiscal_year",
+              "active": true
             }
           ]
         },
@@ -61,6 +62,6 @@
           ]
         }
       }
-    },
+    }
   }
 }
