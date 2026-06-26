@@ -1,0 +1,20 @@
+relationship 888a2ac7-983f-4d33-9f04-4e25ae6fba7e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: mart_ai_commitments.event_date
+	toColumn: LocalDateTable_3b3cfc77-db43-49a6-9484-1dfe755e98e3.Date
+
+relationship eb7ee98b-bd69-411a-90f2-fda8b11cd7e6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: mart_ai_events.event_date
+	toColumn: LocalDateTable_27659a29-ecc7-4e85-8875-ea28ba278e80.Date
+
+relationship 4b16b7b5-0b6c-42e3-a9de-6bdad6957161
+	joinOnDateBehavior: datePartOnly
+	fromColumn: mart_fundamentals.period_end
+	toColumn: LocalDateTable_1137b2bf-9c6f-4c19-b769-a3fb60a8a4ad.Date
+
+relationship 48c1b420-a9f5-42e4-8af6-aca72a17f390
+	joinOnDateBehavior: datePartOnly
+	fromColumn: mart_prices.trade_date
+	toColumn: LocalDateTable_1836987c-f8c8-4488-aa86-be347c78a71a.Date
+

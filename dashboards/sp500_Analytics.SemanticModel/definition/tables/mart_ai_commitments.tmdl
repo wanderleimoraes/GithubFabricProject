@@ -1,0 +1,130 @@
+table mart_ai_commitments
+	lineageTag: f85124dd-c829-4459-b722-7a538873c176
+
+	column ticker
+		dataType: string
+		lineageTag: 35726c36-ffd8-4ec9-92e3-4e675ba0e37a
+		summarizeBy: none
+		sourceColumn: ticker
+
+		annotation SummarizationSetBy = Automatic
+
+	column company_name
+		dataType: string
+		lineageTag: fe6817e8-eb13-4287-aa29-6be7b14ebe81
+		summarizeBy: none
+		sourceColumn: company_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column event_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 40108249-e504-4fe5-b5dd-f21edb80bc77
+		summarizeBy: none
+		sourceColumn: event_date
+
+		variation Variation
+			isDefault
+			relationship: 888a2ac7-983f-4d33-9f04-4e25ae6fba7e
+			defaultHierarchy: LocalDateTable_3b3cfc77-db43-49a6-9484-1dfe755e98e3.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column commitment_text
+		dataType: string
+		lineageTag: 2eb17574-166f-429d-b387-911e3192078d
+		summarizeBy: none
+		sourceColumn: commitment_text
+
+		annotation SummarizationSetBy = Automatic
+
+	column amount_usd
+		dataType: double
+		lineageTag: b2244199-3198-4f25-ad4f-e7d66a287bd4
+		summarizeBy: sum
+		sourceColumn: amount_usd
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column category
+		dataType: string
+		lineageTag: 234f39c7-3f10-4ee2-89e0-7c5324ab5e87
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column source_url
+		dataType: string
+		lineageTag: 4da66e0d-13e2-42a1-95d7-648e6d55968d
+		summarizeBy: none
+		sourceColumn: source_url
+
+		annotation SummarizationSetBy = Automatic
+
+	column confidence
+		dataType: double
+		lineageTag: d630fb25-2f38-43f3-83df-67e9ad8185bf
+		summarizeBy: sum
+		sourceColumn: confidence
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column latest_revenue
+		dataType: double
+		lineageTag: a7888ada-53bc-4c34-8415-c0c51ba1168e
+		summarizeBy: sum
+		sourceColumn: latest_revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column latest_operating_cash_flow
+		dataType: double
+		lineageTag: dae0cc10-6f2e-44d2-9dd1-3c32b61b6b8b
+		summarizeBy: sum
+		sourceColumn: latest_operating_cash_flow
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column commitment_to_revenue_ratio
+		dataType: double
+		lineageTag: acecb66f-7c8e-4c32-b222-041ad9899d07
+		summarizeBy: sum
+		sourceColumn: commitment_to_revenue_ratio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column commitment_to_ocf_ratio
+		dataType: double
+		lineageTag: fc7a4bc5-7c62-48fa-a786-72477e9e6dec
+		summarizeBy: sum
+		sourceColumn: commitment_to_ocf_ratio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition mart_ai_commitments = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405618743944849.9.azuredatabricks.net", "/sql/1.0/warehouses/4dbe468336982c0d", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    sp500_Database = Source{[Name="sp500",Kind="Database"]}[Data],
+				    gold_Schema = sp500_Database{[Name="gold",Kind="Schema"]}[Data],
+				    mart_ai_commitments_Table = gold_Schema{[Name="mart_ai_commitments",Kind="Table"]}[Data]
+				in
+				    mart_ai_commitments_Table
+

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "sp500_Analytics"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "477a5aed-095f-484f-9daf-135de7f1636d"
+  }
+}
