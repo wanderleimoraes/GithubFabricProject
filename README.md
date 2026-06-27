@@ -124,6 +124,45 @@ dbt docs generate && dbt docs serve
 
 ---
 
+## Synthetic vs. real data
+
+The repo runs out-of-the-box on **synthetic sample data** (3 companies, fabricated
+numbers, `example.com` source links) so dbt, the NL Q&A app, and the dashboards work
+offline and for free. The bundled snapshot in `nl_query/sample_data/` is synthetic too.
+
+To replace it with **real data** (live SEC EDGAR + Yahoo Finance + LLM extraction),
+run this on your machine (needs internet and `ANTHROPIC_API_KEY` in `.env`):
+
+```bash
+# 1. Real ingestion
+python -m ingestion.sp500_constituents
+python -m ingestion.market_prices
+python -m ingestion.edgar_fundamentals
+python -m ingestion.edgar_filings
+
+# 2. Real LLM extraction (start with a small --limit to check cost)
+python -m extraction.ai_commitment_extractor --limit 50
+python -m extraction.ai_material_facts_extractor --limit 50
+
+# 3. Rebuild the warehouse
+cd dbt/sp500_analytics
+dbt build --target duckdb          # local; or --target databricks for the cloud
+cd ../..
+
+# 4. Refresh the deployed NL Q&A app's bundled snapshot, then commit
+python -m scripts.export_nl_query_sample
+git add nl_query/sample_data/*.parquet
+git commit -m "Refresh NL Q&A bundle with real data" && git push
+```
+
+For the **Databricks/Power BI** side, also re-upload the refreshed Bronze Parquet to
+the Unity Catalog volume and rebuild on `--target databricks` (see
+[`docs/cloud-setup.md`](docs/cloud-setup.md) Part A6b), then refresh in Power BI.
+
+> Until you run the above, everything works — it's just showing synthetic data.
+
+---
+
 ## Roadmap
 
 - [x] Repository scaffold, architecture docs, dbt project skeleton
