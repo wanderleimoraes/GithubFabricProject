@@ -15,6 +15,11 @@ and AI-friendly analytics (natural-language Q&A + Power BI dashboards).
 
 ## Architecture
 
+![Architecture diagram](dashboards/architecture.png)
+
+<details>
+<summary>Text (ASCII) version</summary>
+
 ```
                               ┌────────────────────────────────────────────┐
    PUBLIC DATA SOURCES        │              AZURE DATABRICKS               │
@@ -42,6 +47,8 @@ and AI-friendly analytics (natural-language Q&A + Power BI dashboards).
                                       │  + NL Q&A interface    │
                                       └───────────────────────┘
 ```
+
+</details>
 
 See [`docs/architecture.md`](docs/architecture.md) for the detailed design,
 data model, and the Medallion (Bronze/Silver/Gold) layering rationale.
