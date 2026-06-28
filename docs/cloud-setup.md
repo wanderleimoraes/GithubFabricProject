@@ -193,6 +193,22 @@ tenant that gives you an organisational `@*.onmicrosoft.com` account Fabric acce
 > F2 bills ~€0.30/hr while running. **Pause it** (Azure Portal → the capacity resource
 > → **Pause**) whenever you're not actively building.
 
+> **Sizing decision — request F2, not F64.** This is a single-user portfolio with a
+> small Direct Lake model; **F2 (2 CU) is sufficient.** Early capacity flows surface
+> **F64** by default (it's the enterprise headline tier, and Copilot historically
+> enforced an F64 minimum), so "64" can end up on a quota ticket even though it isn't
+> needed. A large ask in a constrained region triggers heavy capacity-team review;
+> **F2 is the fast, near-automatic approval.** If F64 appears on a request, correct it
+> to F2. Caveat: a few Copilot features may still enforce an F64 floor, but the
+> **Fabric data agent + ontology** (our actual goal) run on low SKUs.
+>
+> **If West Europe quota is unavailable:** the whole platform is reproducible from
+> dbt, so you can redeploy Databricks to an alternate region (e.g. **Sweden Central**,
+> **Poland Central**) and request F2 there instead. With the credit expiring
+> 2026-07-24, speed beats co-location — take whichever region grants F2 first.
+> (Quota request reference: SR 2606260050001301, subscription
+> `9a8788ef-6725-4651-a94d-086be0dfe9bb`.)
+
 ### C2. Create a Fabric workspace
 
 1. Go to [app.fabric.microsoft.com](https://app.fabric.microsoft.com), sign in as
