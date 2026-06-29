@@ -106,6 +106,27 @@ WHERE daily_return > (
 )
 ORDER BY gics_sector, daily_return DESC;
 
+Q: How much have the top 15 companies spent on R&D over the last 5 fiscal years?
+   (pattern: rank ENTITIES by a TOTAL over a PERIOD, not individual rows)
+SQL:
+WITH recent AS (
+    SELECT ticker, company_name, fiscal_year, rnd_expense
+    FROM mart_fundamentals
+    WHERE rnd_expense IS NOT NULL
+      AND fiscal_year >= (SELECT MAX(fiscal_year) - 4 FROM mart_fundamentals)
+),
+ranked AS (
+    SELECT ticker, company_name, SUM(rnd_expense) AS total_rnd
+    FROM recent
+    GROUP BY ticker, company_name
+    ORDER BY total_rnd DESC
+    LIMIT 15
+)
+SELECT r.company_name, r.total_rnd, c.fiscal_year, c.rnd_expense
+FROM ranked r
+JOIN recent c ON r.ticker = c.ticker
+ORDER BY r.total_rnd DESC, c.fiscal_year;
+
 Q: Which companies committed the most to AI relative to their revenue?
 SQL:
 SELECT ticker, company_name, amount_usd, latest_revenue, commitment_to_revenue_ratio
