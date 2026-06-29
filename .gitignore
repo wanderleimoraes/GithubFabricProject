@@ -38,6 +38,9 @@ data/
 *.pbix.tmp
 **/.pbi/
 
+# Learning curriculum — kept locally, not part of the public portfolio repo
+learn/
+
 # OS / editors
 .DS_Store
 .vscode/

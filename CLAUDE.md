@@ -22,7 +22,7 @@ local-vs-cloud context switches.**
 | `nl_query/` | Streamlit text-to-SQL app. `ontology.py` = our semantic layer. |
 | `dashboards/sp500_Analytics.*` | Power BI **PBIP** project (TMDL + PBIR, diffable). |
 | `docs/cloud-setup.md` | Cloud provisioning guide. Part G = NL Q&A architecture. |
-| `learn/` | The hands-on curriculum + command/git references. |
+| `learn/` | Hands-on curriculum + command/git references (local only; git-ignored). |
 
 ## Conventions
 

@@ -175,12 +175,16 @@ the Unity Catalog volume and rebuild on `--target databricks` (see
 - [x] Repository scaffold, architecture docs, dbt project skeleton
 - [x] Ingestion scripts (S&P 500 list, yfinance prices, EDGAR fundamentals/filings)
 - [x] AI industry events seed file
-- [ ] Wire ingestion output to Databricks Bronze (Delta)
-- [ ] Flesh out Silver/Gold dbt models + tests
-- [ ] LLM AI-commitment extraction pipeline
-- [ ] Natural-language Q&A app
-- [ ] Power BI dashboards + screenshots
-- [ ] Databricks Jobs orchestration + CI
+- [x] Ingestion output loaded to Databricks Bronze (Delta / Unity Catalog)
+- [x] Silver/Gold dbt models + tests (medallion; star schema with `dim_tickers`)
+- [x] LLM extraction pipeline (AI commitments + material AI facts, source-linked)
+- [x] Natural-language Q&A app (ontology-grounded text-to-SQL; deployed to Streamlit)
+- [x] Power BI semantic model + 5-page Direct Lake report (DAX measures, Deneb visual)
+- [x] CI (dbt build on DuckDB + ruff) and Delta `OPTIMIZE`/`ZORDER` post-hooks
+- [ ] Power BI report screenshots for the portfolio
+- [ ] Microsoft Fabric: F2 capacity → mirror catalog → Direct Lake (awaiting quota)
+- [ ] Fabric IQ Ontology + data agent (Copilot / Claude-over-MCP)
+- [ ] Databricks Jobs orchestration (scheduled refresh)
 
 ---
 

@@ -249,8 +249,9 @@ Lakehouse, marked as shortcuts. **Screenshot** → `dashboards/cloud_onelake_sho
 2. Select the four mart tables → **Confirm**.
 3. Fabric creates a **Direct Lake** model — it reads Parquet directly, no import, no
    refresh schedule needed.
-4. In the model editor, add the **relationships** and **DAX measures** from
-   [`learn/10-power-bi-dashboards.md`](../learn/10-power-bi-dashboards.md) (Steps 3–4).
+4. In the model editor, add the **relationships** (fact marts → `dim_tickers` on
+   `ticker`) and the **DAX measures** already defined in the PBIP semantic model
+   under `dashboards/sp500_Analytics.SemanticModel/`.
 
 ### D2. Connect Power BI Desktop
 
