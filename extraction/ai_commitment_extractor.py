@@ -106,7 +106,12 @@ def main() -> None:
         except requests.RequestException as exc:
             print(f"  skip {f['ticker']} {f['accession_number']}: {exc}")
             continue
-        for item in extract_commitments(client, text):
+        try:
+            items = extract_commitments(client, text)
+        except Exception as exc:  # noqa: BLE001 - API/credit/auth error: stop, still write
+            print(f"  extraction stopped ({exc}); writing {len(records)} records so far")
+            break
+        for item in items:
             records.append(
                 {
                     "ticker": f["ticker"],
