@@ -206,8 +206,8 @@ tenant that gives you an organisational `@*.onmicrosoft.com` account Fabric acce
 > dbt, so you can redeploy Databricks to an alternate region (e.g. **Sweden Central**,
 > **Poland Central**) and request F2 there instead. With the credit expiring
 > 2026-07-24, speed beats co-location — take whichever region grants F2 first.
-> (Quota request reference: SR 2606260050001301, subscription
-> `9a8788ef-6725-4651-a94d-086be0dfe9bb`.)
+> (When filing a quota request, include your Azure **subscription ID** and the
+> support **SR number** — keep those in your ticket, not in the public repo.)
 
 ### C2. Create a Fabric workspace
 

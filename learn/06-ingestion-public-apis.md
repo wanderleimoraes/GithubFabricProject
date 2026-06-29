@@ -51,7 +51,7 @@ The SEC allows free API access but requires a descriptive `User-Agent` header on
 every request:
 
 ```
-User-Agent: SP500 Portfolio Project wanderleimoraes@gmail.com
+User-Agent: SP500 Portfolio Project you@example.com
 ```
 
 Without it, you get HTTP 403 errors. The SEC also enforces a rate limit of ~10
@@ -104,7 +104,7 @@ Copy-Item .env.example .env
 Open `.env` in VS Code. The only required field for this module is:
 
 ```
-SEC_USER_AGENT="SP500 Portfolio Project wanderleimoraes@gmail.com"
+SEC_USER_AGENT="SP500 Portfolio Project you@example.com"
 DATA_DIR="C:/dev/GithubFabricProject/data"
 ```
 
@@ -234,7 +234,7 @@ You're done with this module when:
    # MSFT CIK is 0000789019
    resp = requests.get(
        "https://data.sec.gov/api/xbrl/companyfacts/CIK0000789019.json",
-       headers={"User-Agent": "SP500 Portfolio Project wanderleimoraes@gmail.com"}
+       headers={"User-Agent": "SP500 Portfolio Project you@example.com"}
    )
    facts = resp.json()
    # List the us-gaap tags available for MSFT
