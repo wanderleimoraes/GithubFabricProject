@@ -47,6 +47,15 @@ Relationships (how to join):
 """.strip()
 
 METRIC_GLOSSARY = """
+Time-window rule (IMPORTANT):
+- For "last N years" / "recent" / "since YYYY" on fundamentals, filter on the DATE
+  column **period_end**, e.g. period_end >= (SELECT MAX(period_end) FROM
+  mart_fundamentals) - INTERVAL N YEAR. Do NOT use fiscal_year for time windows:
+  fiscal_year is an integer LABEL, and companies with non-calendar fiscal years are
+  labeled a year ahead, so MAX(fiscal_year) can return a sparse, misleading cohort.
+- To rank "top N companies" over a period, SUM the metric per company across the
+  window and rank by that total — don't pick a single latest year.
+
 Metric glossary (definitions — use these exact formulas):
 - net_margin = net_income / revenue (precomputed column on mart_fundamentals).
 - rnd_intensity = rnd_expense / revenue (precomputed on mart_fundamentals).
@@ -106,14 +115,15 @@ WHERE daily_return > (
 )
 ORDER BY gics_sector, daily_return DESC;
 
-Q: How much have the top 15 companies spent on R&D over the last 5 fiscal years?
-   (pattern: rank ENTITIES by a TOTAL over a PERIOD, not individual rows)
+Q: How much have the top 15 companies spent on R&D over the last 5 years?
+   (pattern: rank ENTITIES by a TOTAL over a PERIOD, not individual rows;
+    use period_end DATE for the window, never fiscal_year — see time-window rule)
 SQL:
 WITH recent AS (
-    SELECT ticker, company_name, fiscal_year, rnd_expense
+    SELECT ticker, company_name, period_end, rnd_expense
     FROM mart_fundamentals
     WHERE rnd_expense IS NOT NULL
-      AND fiscal_year >= (SELECT MAX(fiscal_year) - 4 FROM mart_fundamentals)
+      AND period_end >= (SELECT MAX(period_end) FROM mart_fundamentals) - INTERVAL 5 YEAR
 ),
 ranked AS (
     SELECT ticker, company_name, SUM(rnd_expense) AS total_rnd
@@ -122,10 +132,10 @@ ranked AS (
     ORDER BY total_rnd DESC
     LIMIT 15
 )
-SELECT r.company_name, r.total_rnd, c.fiscal_year, c.rnd_expense
+SELECT r.company_name, r.total_rnd, c.period_end, c.rnd_expense
 FROM ranked r
 JOIN recent c ON r.ticker = c.ticker
-ORDER BY r.total_rnd DESC, c.fiscal_year;
+ORDER BY r.total_rnd DESC, c.period_end;
 
 Q: Which companies committed the most to AI relative to their revenue?
 SQL:
