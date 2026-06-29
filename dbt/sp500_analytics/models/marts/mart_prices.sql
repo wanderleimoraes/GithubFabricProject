@@ -1,3 +1,5 @@
+{{ config(post_hook = optimize_delta('ticker, trade_date')) }}
+
 -- Gold: daily price features joined to company reference data.
 -- Powers the stock-price-over-time dashboard.
 

@@ -1,3 +1,5 @@
+{{ config(post_hook = optimize_delta('ticker')) }}
+
 -- Gold: AI investment commitments (LLM-extracted) sliced against fundamentals so
 -- commitments can be compared to revenue, cash flow, profit, etc.
 -- Powers the "AI investment commitment" dashboard.

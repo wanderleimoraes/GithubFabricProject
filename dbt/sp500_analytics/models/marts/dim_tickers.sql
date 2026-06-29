@@ -1,3 +1,5 @@
+{{ config(post_hook = optimize_delta('ticker')) }}
+
 -- Gold dimension: one row per company (ticker).
 -- The hub of the star schema — every fact mart (prices, fundamentals,
 -- ai_commitments) relates many-to-one to this table on `ticker`. Built in the

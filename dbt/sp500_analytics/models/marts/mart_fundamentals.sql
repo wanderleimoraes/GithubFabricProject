@@ -1,3 +1,5 @@
+{{ config(post_hook = optimize_delta('ticker')) }}
+
 -- Gold: one row per company per fiscal period, canonical metrics pivoted to columns.
 -- Powers the company-vs-company comparison dashboard and the NL Q&A layer.
 

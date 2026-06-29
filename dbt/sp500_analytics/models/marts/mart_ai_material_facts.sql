@@ -1,3 +1,5 @@
+{{ config(post_hook = optimize_delta('ticker')) }}
+
 -- Gold: material AI facts (LLM-extracted from 8-K filings), one fact per row.
 -- Deliberately rich and source-linked so a reader can click through to the filing
 -- and interpret each fact for themselves. Powers the "AI material facts" table and
