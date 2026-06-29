@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import os
 import re
+from pathlib import Path
 
 import duckdb
 import pandas as pd
@@ -21,12 +22,58 @@ from dotenv import load_dotenv
 load_dotenv()
 
 try:
+    from nl_query.ontology import build_ontology_context
     from nl_query.schema_context import allowed_tables, build_schema_context
 except ImportError:
+    from ontology import build_ontology_context  # type: ignore[no-redef]
     from schema_context import allowed_tables, build_schema_context  # type: ignore[no-redef]
 
 MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
 DUCKDB_PATH = os.getenv("DUCKDB_PATH", "./data/sp500.duckdb")
+SAMPLE_DIR = Path(__file__).resolve().parent / "sample_data"
+
+
+def get_secret(name: str, default: str | None = None) -> str | None:
+    """Read config from Streamlit secrets first, then environment (.env locally)."""
+    try:
+        if name in st.secrets:
+            return str(st.secrets[name])
+    except Exception:  # noqa: BLE001 - no secrets file in local dev
+        pass
+    return os.getenv(name, default)
+
+
+def get_connection() -> duckdb.DuckDBPyConnection:
+    """Connect to the local DuckDB warehouse if present (local dev), else load the
+    bundled sample Parquet marts into an in-memory DB (deployed app)."""
+    local_db = Path(DUCKDB_PATH)
+    if local_db.exists():
+        con = duckdb.connect(str(local_db), read_only=True)
+        con.execute("SET search_path = 'main_gold'")
+        return con
+    con = duckdb.connect(":memory:")
+    for pq in sorted(SAMPLE_DIR.glob("*.parquet")):
+        con.execute(
+            f'CREATE TABLE "{pq.stem}" AS SELECT * FROM read_parquet(?)', [pq.as_posix()]
+        )
+    return con
+
+
+def check_password() -> bool:
+    """Gate the app behind a shared password (set APP_PASSWORD in Streamlit secrets).
+    If no password is configured (local dev), the app is open."""
+    expected = get_secret("APP_PASSWORD")
+    if not expected:
+        return True
+    if st.session_state.get("auth_ok"):
+        return True
+    pw = st.text_input("Password", type="password")
+    if pw:
+        if pw == expected:
+            st.session_state["auth_ok"] = True
+            return True
+        st.error("Incorrect password.")
+    return False
 
 SQL_SYSTEM_PROMPT = """You translate questions into a single read-only SQL query for a \
 DuckDB warehouse. Rules:
@@ -34,15 +81,24 @@ DuckDB warehouse. Rules:
 - Output ONLY the SQL, no prose, no markdown fences.
 - SELECT statements only. Never write INSERT/UPDATE/DELETE/DROP/ALTER/CREATE.
 - Prefer explicit column lists and add LIMIT 1000 unless the question implies otherwise.
+- Follow the semantic layer below: use its relationships for joins and its metric
+  glossary for any business term (margins, growth, intensity, outperform, etc.).
 
 Schema:
-{schema}"""
+{schema}
+
+Semantic layer:
+{ontology}"""
 
 FORBIDDEN = re.compile(r"\b(insert|update|delete|drop|alter|create|attach|copy|pragma)\b", re.I)
 
 
 def generate_sql(client: Anthropic, question: str, schema: str) -> str:
-    system = SQL_SYSTEM_PROMPT.format(tables=", ".join(sorted(allowed_tables())), schema=schema)
+    system = SQL_SYSTEM_PROMPT.format(
+        tables=", ".join(sorted(allowed_tables())),
+        schema=schema,
+        ontology=build_ontology_context(),
+    )
     msg = client.messages.create(
         model=MODEL,
         max_tokens=800,
@@ -81,11 +137,21 @@ def main() -> None:
     st.title("📈 SP500 AI-Era Analytics — Natural-Language Q&A")
     st.caption("Ask about fundamentals, prices, or AI commitments. Backed by dbt Gold marts.")
 
-    if not os.getenv("ANTHROPIC_API_KEY"):
-        st.error("ANTHROPIC_API_KEY is not set. See .env.example.")
+    if not check_password():
         return
 
-    client = Anthropic()
+    api_key = get_secret("ANTHROPIC_API_KEY")
+    if not api_key:
+        st.error("ANTHROPIC_API_KEY is not set. See .env.example / Streamlit secrets.")
+        return
+
+    max_questions = int(get_secret("MAX_QUESTIONS_PER_SESSION", "20") or "20")
+    asked = st.session_state.get("q_count", 0)
+    if asked >= max_questions:
+        st.warning(f"Session limit reached ({max_questions} questions). Refresh to reset.")
+        return
+
+    client = Anthropic(api_key=api_key)
     schema = build_schema_context()
     question = st.text_input(
         "Your question",
@@ -96,6 +162,8 @@ def main() -> None:
         with st.expander("Schema the assistant can see"):
             st.code(schema)
         return
+
+    st.session_state["q_count"] = asked + 1
 
     with st.spinner("Generating SQL..."):
         sql = generate_sql(client, question, schema)
@@ -108,8 +176,7 @@ def main() -> None:
         return
 
     try:
-        con = duckdb.connect(DUCKDB_PATH, read_only=True)
-        con.execute("SET search_path = 'main_gold'")
+        con = get_connection()
         df = con.execute(sql).fetchdf()
     except Exception as exc:  # noqa: BLE001 - surface any warehouse error to the UI
         st.error(f"Query failed: {exc}")

@@ -1,0 +1,29 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["mart_ai_commitments","mart_ai_events","mart_fundamentals","mart_prices","dim_tickers","mart_ai_material_facts"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table mart_ai_commitments
+ref table DateTableTemplate_f17ce298-a244-479b-a02a-9f0afdd87671
+ref table LocalDateTable_3b3cfc77-db43-49a6-9484-1dfe755e98e3
+ref table mart_ai_events
+ref table LocalDateTable_27659a29-ecc7-4e85-8875-ea28ba278e80
+ref table mart_fundamentals
+ref table LocalDateTable_1137b2bf-9c6f-4c19-b769-a3fb60a8a4ad
+ref table mart_prices
+ref table LocalDateTable_1836987c-f8c8-4488-aa86-be347c78a71a
+ref table dim_tickers
+ref table mart_ai_material_facts
+ref table LocalDateTable_fb67ed77-1851-4766-82b7-02aee61c51de
+
+ref cultureInfo en-US
+

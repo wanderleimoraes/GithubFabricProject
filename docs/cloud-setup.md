@@ -118,8 +118,32 @@ dbt build --target databricks
 ```
 
 **✅ Checkpoint + artifact:** in Databricks → **Catalog** → `sp500` → `gold`, you see
-`mart_prices`, `mart_fundamentals`, `mart_ai_commitments`, `mart_ai_events`.
+`dim_tickers`, `mart_prices`, `mart_fundamentals`, `mart_ai_commitments`,
+`mart_ai_events`, `mart_ai_material_facts`.
 **Screenshot this** → save to `dashboards/cloud_unity_catalog.png`.
+
+### A6b. Loading one Bronze table (the concrete recipe)
+
+The Bronze tables were created by uploading each Parquet to a Unity Catalog **volume**
+and running `CREATE TABLE … AS SELECT` over it in the SQL Editor. Use this same recipe
+whenever you add a **new** Bronze source (e.g. `ai_material_facts`):
+
+1. **Upload the file.** Databricks → **Catalog** → `sp500` → `bronze` → **Volumes** →
+   `raw` → **Upload** → pick
+   `data/bronze/ai_material_facts/ai_material_facts.parquet`.
+2. **Create the Delta table** (SQL Editor):
+   ```sql
+   CREATE OR REPLACE TABLE sp500.bronze.ai_material_facts AS
+   SELECT * FROM parquet.`/Volumes/sp500/bronze/raw/ai_material_facts.parquet`;
+   ```
+3. **Rebuild** so the new mart appears:
+   ```powershell
+   dbt build --target databricks --select +mart_ai_material_facts
+   ```
+
+> **Timestamp note:** the nanosecond-timestamp fix (`scripts/convert_bronze_timestamps.py`)
+> is only needed for files with `_ingested_at` (prices, fundamentals, filings).
+> `ai_material_facts` has only date columns, so it loads as-is.
 
 ---
 
@@ -169,6 +193,22 @@ tenant that gives you an organisational `@*.onmicrosoft.com` account Fabric acce
 > F2 bills ~€0.30/hr while running. **Pause it** (Azure Portal → the capacity resource
 > → **Pause**) whenever you're not actively building.
 
+> **Sizing decision — request F2, not F64.** This is a single-user portfolio with a
+> small Direct Lake model; **F2 (2 CU) is sufficient.** Early capacity flows surface
+> **F64** by default (it's the enterprise headline tier, and Copilot historically
+> enforced an F64 minimum), so "64" can end up on a quota ticket even though it isn't
+> needed. A large ask in a constrained region triggers heavy capacity-team review;
+> **F2 is the fast, near-automatic approval.** If F64 appears on a request, correct it
+> to F2. Caveat: a few Copilot features may still enforce an F64 floor, but the
+> **Fabric data agent + ontology** (our actual goal) run on low SKUs.
+>
+> **If West Europe quota is unavailable:** the whole platform is reproducible from
+> dbt, so you can redeploy Databricks to an alternate region (e.g. **Sweden Central**,
+> **Poland Central**) and request F2 there instead. With the credit expiring
+> 2026-07-24, speed beats co-location — take whichever region grants F2 first.
+> (When filing a quota request, include your Azure **subscription ID** and the
+> support **SR number** — keep those in your ticket, not in the public repo.)
+
 ### C2. Create a Fabric workspace
 
 1. Go to [app.fabric.microsoft.com](https://app.fabric.microsoft.com), sign in as
@@ -209,8 +249,9 @@ Lakehouse, marked as shortcuts. **Screenshot** → `dashboards/cloud_onelake_sho
 2. Select the four mart tables → **Confirm**.
 3. Fabric creates a **Direct Lake** model — it reads Parquet directly, no import, no
    refresh schedule needed.
-4. In the model editor, add the **relationships** and **DAX measures** from
-   [`learn/10-power-bi-dashboards.md`](../learn/10-power-bi-dashboards.md) (Steps 3–4).
+4. In the model editor, add the **relationships** (fact marts → `dim_tickers` on
+   `ticker`) and the **DAX measures** already defined in the PBIP semantic model
+   under `dashboards/sp500_Analytics.SemanticModel/`.
 
 ### D2. Connect Power BI Desktop
 
@@ -242,6 +283,109 @@ each is committed to git **before** Part F:
 - [ ] Update root `README.md` with the best screenshot and a line:
       *"Built and verified end-to-end on Azure Databricks + Microsoft Fabric (Direct Lake)."*
 - [ ] Update [`docs/architecture.md`](architecture.md) §8 cost summary with your actual spend.
+
+---
+
+## Part G — Conversational NL Q&A: the report's destination
+
+The report is a **narrative**: pages 1–3 tell the story (fundamentals → AI commitments
+→ price & events), and the final page hands the reader the keys — a place where *they*
+ask their own questions in plain language. This section is the blueprint for that
+endpoint. Most of it is gated on Fabric capacity (the pending support ticket), so it's
+documented here and built when the capacity lands.
+
+### The two layers (don't conflate them)
+
+An "ask it yourself" experience has two separable layers:
+
+| Layer | What it is | Options |
+|-------|-----------|---------|
+| **Engine** | The brain that understands the data and answers | Fabric Data Agent (GPT) grounded on an **Ontology**, *or* a custom Claude text-to-SQL app |
+| **Surface** | Where the user types the question | **Copilot** in Power BI (native), *or* **Claude** via MCP, *or* the Streamlit chat box |
+
+The engine and surface are independent — the same ontology-grounded engine can be reached
+from multiple surfaces.
+
+### The ontology (Fabric IQ)
+
+[Fabric IQ Ontology](https://learn.microsoft.com/en-us/fabric/iq/ontology/overview) (Preview)
+is Microsoft's semantic layer: it models **entity types** (Company, Commitment, Filing),
+**properties**, and **relationships** ("Company *files* an 8-K"), then **binds** them to
+data in OneLake. Crucially, you can
+[**generate an ontology from a Power BI semantic model**](https://learn.microsoft.com/en-us/fabric/iq/ontology/concepts-generate) —
+so our existing star schema (`dim_tickers` + four marts), relationships, and DAX measures
+become the seed. The ontology is what lets the agent answer *complex* questions
+(multi-table, comparative, temporal) reliably instead of guessing joins.
+
+### The engine: Fabric Data Agent
+
+A [Fabric Data Agent](https://learn.microsoft.com/en-us/fabric/data-science/concept-data-agent)
+runs on **Azure OpenAI GPT models hosted in Fabric** (currently `gpt-5.1` / `gpt-5-mini`) —
+*not* Claude. Copilot in Power BI is the same GPT lineage. The agent reasons over the
+ontology to answer questions grounded in our defined entities and relationships.
+
+### Reaching it with Claude (via MCP)
+
+The data agent can be published as an
+[**MCP server**](https://learn.microsoft.com/en-us/fabric/data-science/data-agent-mcp-server)
+(Preview). That makes the GPT-powered, ontology-grounded agent a **tool** that *Claude*
+(Claude Code / Claude Desktop / our own app) can call. So a user asks Claude → Claude calls
+the Fabric data agent → the agent reasons over the ontology → returns a grounded answer.
+This is the more impressive engineering story: *"I exposed my Fabric data agent over MCP
+and drove it with Claude."*
+
+### Using `microsoft/skills-for-fabric` in our favour
+
+[`microsoft/skills-for-fabric`](https://github.com/microsoft/skills-for-fabric) is two
+things in one repo — treat them separately:
+
+1. **Skills + `CLAUDE.md` (knowledge — works today, no Fabric needed).** Reusable AI
+   instructions for Fabric (REST API patterns, T-SQL/KQL, medallion design, Power BI
+   workflows). When Claude Code runs inside the cloned repo, its `CLAUDE.md` loads
+   automatically, giving Claude expert Fabric context. Use this **now** while we author
+   TMDL, plan the ontology, and design the agent — it makes Claude a better Fabric builder
+   at zero cost.
+
+   ```bash
+   git clone https://github.com/microsoft/skills-for-fabric.git
+   # then run Claude Code from inside that folder for Fabric-specific work,
+   # or copy its CLAUDE.md / relevant skills into this project as reference.
+   ```
+
+2. **Live MCP wiring (action — needs Fabric capacity + `az login`).** Connects Claude to a
+   live Fabric MCP server (REST APIs, or the data-agent MCP server) for real queries.
+
+   ```bash
+   az login
+   az account get-access-token --resource https://api.fabric.microsoft.com
+   ```
+
+   Then register the Fabric MCP server (bearer-token pattern in the client's `mcp.json`):
+
+   ```json
+   {
+     "mcpServers": {
+       "fabric": {
+         "url": "https://<your-fabric-mcp-server>",
+         "transport": "http",
+         "auth": { "type": "bearer", "token": "${FABRIC_MCP_TOKEN}" }
+       }
+     }
+   }
+   ```
+
+   > Note: this wiring runs on **your laptop** (it needs `az login` and network access to
+   > your Fabric workspace), not the cloud build session.
+
+### Build sequence
+
+| Phase | State | Endpoint |
+|-------|-------|----------|
+| **Now** | No Fabric capacity | Streamlit text-to-SQL app (Claude engine, runs against Databricks). 4th report page = launchpad (Smart Narrative recap + link to the live app). |
+| **When Fabric lands** | F2 capacity active | Mirror `sp500` catalog → generate **Ontology** from the semantic model → stand up a **Fabric Data Agent** → reach it via **Copilot** (native) *and* **Claude over MCP**. 4th page repoints to the native experience. |
+
+The narrative is unchanged across phases: pages 1–3 tell the story, page 4 hands over the
+keys. Only the engine behind the keys gets upgraded.
 
 ---
 

@@ -140,6 +140,42 @@ def main() -> None:
         ),
     )
 
+    _write(
+        "ai_material_facts",
+        pd.DataFrame(
+            [
+                {
+                    "ticker": "MSFT",
+                    "fact_date": dt.date(2023, 1, 23),
+                    "headline": "Microsoft extends OpenAI partnership",
+                    "fact_text": "Synthetic verbatim text describing a multiyear AI partnership.",
+                    "context": "Signals deepening AI platform strategy.",
+                    "category": "partnership",
+                    "amount_usd": 1e10,
+                    "significance": "high",
+                    "form": "8-K",
+                    "filing_item": "7.01",
+                    "accession_number": "0000000000-23-000001",
+                    "source_url": "https://example.com/filing",
+                },
+                {
+                    "ticker": "NVDA",
+                    "fact_date": dt.date(2024, 2, 21),
+                    "headline": "Data-center AI demand drives revenue",
+                    "fact_text": "Synthetic verbatim text on record data-center AI revenue.",
+                    "context": "Quantifies AI-driven demand for the reader.",
+                    "category": "revenue_demand",
+                    "amount_usd": None,
+                    "significance": "high",
+                    "form": "8-K",
+                    "filing_item": "2.02",
+                    "accession_number": "0000000000-24-000002",
+                    "source_url": "https://example.com/filing2",
+                },
+            ]
+        ),
+    )
+
 
 if __name__ == "__main__":
     main()

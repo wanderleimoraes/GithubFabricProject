@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.2.0/schema.json",
+  "name": "75df638809e74c6d8198",
+  "position": {
+    "x": 330,
+    "y": 400,
+    "z": 1000,
+    "height": 150,
+    "width": 290,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_fundamentals"
+                    }
+                  },
+                  "Property": "RnD Intensity %"
+                }
+              },
+              "queryRef": "mart_fundamentals.RnD Intensity %"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

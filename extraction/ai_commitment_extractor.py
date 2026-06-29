@@ -119,7 +119,13 @@ def main() -> None:
                 }
             )
 
-    df = pd.DataFrame(records)
+    # Always write the full schema, even with zero records, so downstream dbt can
+    # read the Parquet (an empty DataFrame would have no columns and fail to load).
+    columns = [
+        "ticker", "event_date", "commitment_text", "amount_usd", "category",
+        "source_url", "confidence",
+    ]
+    df = pd.DataFrame(records, columns=columns)
     out = bronze_path("ai_commitments") / "ai_commitments.parquet"
     df.to_parquet(out, index=False)
     print(f"Wrote {len(df)} AI-commitment records -> {out}")

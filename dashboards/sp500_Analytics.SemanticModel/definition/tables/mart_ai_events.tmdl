@@ -1,0 +1,82 @@
+table mart_ai_events
+	lineageTag: 9cacae64-6197-475a-a258-17e0b1490035
+
+	column event_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 56e55b8d-48fa-404e-aecb-53ce1af8af35
+		summarizeBy: none
+		sourceColumn: event_date
+
+		variation Variation
+			isDefault
+			relationship: eb7ee98b-bd69-411a-90f2-fda8b11cd7e6
+			defaultHierarchy: LocalDateTable_27659a29-ecc7-4e85-8875-ea28ba278e80.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column vendor
+		dataType: string
+		lineageTag: 3dea0c5f-68b1-4bd7-b0cc-475afe05ca6e
+		summarizeBy: none
+		sourceColumn: vendor
+
+		annotation SummarizationSetBy = Automatic
+
+	column event_name
+		dataType: string
+		lineageTag: 3cdf1e00-2cbe-4414-ae16-5bebc44e9941
+		summarizeBy: none
+		sourceColumn: event_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: e2e22810-a790-44dd-b3a3-7be42fe2c877
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column related_ticker
+		dataType: string
+		lineageTag: 7d1f72bd-2898-4290-b4e1-ee3c097a3890
+		summarizeBy: none
+		sourceColumn: related_ticker
+
+		annotation SummarizationSetBy = Automatic
+
+	column significance
+		dataType: string
+		lineageTag: e8376e46-6046-4034-9e15-26b867c65ae3
+		summarizeBy: none
+		sourceColumn: significance
+
+		annotation SummarizationSetBy = Automatic
+
+	column url
+		dataType: string
+		lineageTag: 94c5eb0f-43ef-4c2a-8e60-9f6d7eea964b
+		summarizeBy: none
+		sourceColumn: url
+
+		annotation SummarizationSetBy = Automatic
+
+	partition mart_ai_events = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405618743944849.9.azuredatabricks.net", "/sql/1.0/warehouses/4dbe468336982c0d", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    sp500_Database = Source{[Name="sp500",Kind="Database"]}[Data],
+				    gold_Schema = sp500_Database{[Name="gold",Kind="Schema"]}[Data],
+				    mart_ai_events_Table = gold_Schema{[Name="mart_ai_events",Kind="Table"]}[Data]
+				in
+				    mart_ai_events_Table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

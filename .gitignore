@@ -2,6 +2,7 @@
 .env
 *.env
 !.env.example
+.streamlit/secrets.toml
 
 # Python
 __pycache__/
@@ -18,6 +19,7 @@ venv/
 dbt/**/target/
 dbt/**/dbt_packages/
 dbt/**/logs/
+logs/
 profiles.yml
 !profiles.yml.example
 !dbt/sp500_analytics/ci/profiles.yml
@@ -27,10 +29,20 @@ data/
 *.parquet
 *.csv
 !dbt/**/seeds/*.csv
+# Bundled sample marts that ship with the deployed Streamlit app (small, public-safe).
+!nl_query/sample_data/*.parquet
 *.duckdb
 
-# Power BI temp
+# Power BI temp / local cache & settings (PBIP)
+# `**/.pbi/` matches the .pbi folder at ANY depth (a plain `*/` only matches one level).
 *.pbix.tmp
+**/.pbi/
+
+# Learning curriculum — kept locally, not part of the public portfolio repo
+learn/
+
+# Stray dbt tutorial project (created by accident, not part of this repo)
+jaffle_shop/
 
 # OS / editors
 .DS_Store

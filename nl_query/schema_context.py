@@ -12,10 +12,11 @@ from pathlib import Path
 
 DBT_TARGET = Path(__file__).resolve().parents[1] / "dbt" / "sp500_analytics" / "target"
 
-ALLOWED_PREFIXES = ("mart_",)
+ALLOWED_PREFIXES = ("mart_", "dim_")
 
 STATIC_FALLBACK = """
-Tables (Gold marts):
+Tables (Gold marts + dimension):
+- dim_tickers(ticker, company_name, gics_sector, gics_sub_industry, cik)
 - mart_fundamentals(ticker, company_name, gics_sector, fiscal_year, fiscal_period,
     period_end, revenue, net_income, operating_income, rnd_expense, capex,
     operating_cash_flow, total_assets, stockholders_equity, eps_diluted,
@@ -26,6 +27,9 @@ Tables (Gold marts):
     category, source_url, confidence, latest_revenue, commitment_to_revenue_ratio)
 - mart_ai_events(event_date, vendor, event_name, category, related_ticker,
     significance, url)
+- mart_ai_material_facts(ticker, company_name, gics_sector, fact_date, fact_year,
+    headline, fact_text, context, category, amount_usd, significance, form,
+    filing_item, accession_number, source_url)
 """.strip()
 
 
@@ -56,8 +60,10 @@ def build_schema_context() -> str:
 def allowed_tables() -> set[str]:
     """Tables the generated SQL is permitted to reference."""
     return {
+        "dim_tickers",
         "mart_fundamentals",
         "mart_prices",
         "mart_ai_commitments",
         "mart_ai_events",
+        "mart_ai_material_facts",
     }

@@ -1,0 +1,43 @@
+relationship 888a2ac7-983f-4d33-9f04-4e25ae6fba7e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: mart_ai_commitments.event_date
+	toColumn: LocalDateTable_3b3cfc77-db43-49a6-9484-1dfe755e98e3.Date
+
+relationship eb7ee98b-bd69-411a-90f2-fda8b11cd7e6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: mart_ai_events.event_date
+	toColumn: LocalDateTable_27659a29-ecc7-4e85-8875-ea28ba278e80.Date
+
+relationship 4b16b7b5-0b6c-42e3-a9de-6bdad6957161
+	joinOnDateBehavior: datePartOnly
+	fromColumn: mart_fundamentals.period_end
+	toColumn: LocalDateTable_1137b2bf-9c6f-4c19-b769-a3fb60a8a4ad.Date
+
+relationship 48c1b420-a9f5-42e4-8af6-aca72a17f390
+	joinOnDateBehavior: datePartOnly
+	fromColumn: mart_prices.trade_date
+	toColumn: LocalDateTable_1836987c-f8c8-4488-aa86-be347c78a71a.Date
+
+relationship AutoDetected_dc1e0f6a-05c2-4d63-8bd4-b1c6d0b9595a
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: mart_ai_commitments.ticker
+	toColumn: dim_tickers.ticker
+
+relationship AutoDetected_ee048bf1-dc8b-4911-a97e-40d5190ec687
+	fromColumn: mart_fundamentals.ticker
+	toColumn: dim_tickers.ticker
+
+relationship AutoDetected_1ad9ac98-1982-43de-a94a-9c874cb6f10c
+	fromColumn: mart_prices.ticker
+	toColumn: dim_tickers.ticker
+
+relationship 008a6c55-83c4-4bed-821d-4a2b7e9aa488
+	joinOnDateBehavior: datePartOnly
+	fromColumn: mart_ai_material_facts.fact_date
+	toColumn: LocalDateTable_fb67ed77-1851-4766-82b7-02aee61c51de.Date
+
+relationship 718068bb-b32f-408a-4816-75e6e20331ee
+	fromColumn: mart_ai_material_facts.ticker
+	toColumn: dim_tickers.ticker
+

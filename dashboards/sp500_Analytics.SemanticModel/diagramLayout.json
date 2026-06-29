@@ -1,0 +1,100 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 334.00001525878906,
+        "y": 49.000000953674316
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "nodeIndex": "mart_ai_commitments",
+          "nodeLineageTag": "f85124dd-c829-4459-b722-7a538873c176",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 284,
+            "y": 26
+          },
+          "nodeIndex": "mart_ai_events",
+          "nodeLineageTag": "9cacae64-6197-475a-a258-17e0b1490035",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 568,
+            "y": 0
+          },
+          "nodeIndex": "mart_fundamentals",
+          "nodeLineageTag": "3fa127c9-cd9b-458d-81c8-b6334f25928c",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 852,
+            "y": 0
+          },
+          "nodeIndex": "mart_prices",
+          "nodeLineageTag": "5f9ca2f0-28f6-421a-953c-2b5b46783a4a",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 366,
+            "y": 501.25
+          },
+          "nodeIndex": "dim_tickers",
+          "nodeLineageTag": "14e981c3-48b8-481a-993f-ad0937961d40",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1138.5,
+            "y": 0
+          },
+          "nodeIndex": "mart_ai_material_facts",
+          "nodeLineageTag": "d883d0fa-fe8c-49db-9626-872783de6350",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 80,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

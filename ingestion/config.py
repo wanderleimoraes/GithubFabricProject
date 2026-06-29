@@ -17,7 +17,7 @@ BRONZE_DIR = DATA_DIR / "bronze"
 # --- SEC EDGAR ---------------------------------------------------------------
 # SEC requires a descriptive User-Agent with contact info, and rate-limits to
 # ~10 requests/sec. See https://www.sec.gov/os/webmaster-faq#developers
-SEC_USER_AGENT = os.getenv("SEC_USER_AGENT", "SP500 Portfolio Project wanderleimoraes@gmail.com")
+SEC_USER_AGENT = os.getenv("SEC_USER_AGENT", "SP500 Portfolio Project you@example.com")
 SEC_REQUEST_DELAY_SECONDS = 0.12  # stay comfortably under 10 req/s
 
 # --- Time window -------------------------------------------------------------

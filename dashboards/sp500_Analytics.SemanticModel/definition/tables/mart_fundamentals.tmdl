@@ -1,0 +1,237 @@
+table mart_fundamentals
+	lineageTag: 3fa127c9-cd9b-458d-81c8-b6334f25928c
+
+	measure 'Net Margin %' =
+			DIVIDE(
+			    SUM(mart_fundamentals[net_income]),
+			    SUM(mart_fundamentals[revenue])
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 53d80d3e-a024-4b12-ad34-10b25fb2c5d5
+
+	measure 'RnD Intensity %' =
+			DIVIDE(
+			    SUM(mart_fundamentals[rnd_expense]),
+			    SUM(mart_fundamentals[revenue])
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 079a453d-f6bd-4837-8c98-7eb02335edd5
+
+	column ticker
+		dataType: string
+		lineageTag: 0b54d341-6802-48a3-9017-2423e1fb6d75
+		summarizeBy: none
+		sourceColumn: ticker
+
+		annotation SummarizationSetBy = Automatic
+
+	column cik
+		dataType: string
+		lineageTag: 831e17b8-ae97-4960-8680-8fff1df73e85
+		summarizeBy: none
+		sourceColumn: cik
+
+		annotation SummarizationSetBy = Automatic
+
+	column fiscal_year
+		dataType: int64
+		formatString: 0
+		lineageTag: 76664b4e-e06d-4fd0-93a3-a3f31b971c1b
+		summarizeBy: sum
+		sourceColumn: fiscal_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column fiscal_period
+		dataType: string
+		lineageTag: 8a7476d9-04e7-4841-bab3-ddd2718c61d0
+		summarizeBy: none
+		sourceColumn: fiscal_period
+
+		annotation SummarizationSetBy = Automatic
+
+	column period_end
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e0328183-b675-4110-9223-152e3e4cbf4d
+		summarizeBy: none
+		sourceColumn: period_end
+
+		variation Variation
+			isDefault
+			relationship: 4b16b7b5-0b6c-42e3-a9de-6bdad6957161
+			defaultHierarchy: LocalDateTable_1137b2bf-9c6f-4c19-b769-a3fb60a8a4ad.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column revenue
+		dataType: double
+		lineageTag: c98f134f-38f8-41ab-8339-33e5c2bd7ec4
+		summarizeBy: sum
+		sourceColumn: revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column net_income
+		dataType: double
+		lineageTag: 9c5f4cb9-c924-4fe0-8811-9e8a80baf8d1
+		summarizeBy: sum
+		sourceColumn: net_income
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column operating_income
+		dataType: double
+		lineageTag: 036b9ef4-4472-469b-b63f-f0456d43d7e2
+		summarizeBy: sum
+		sourceColumn: operating_income
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column rnd_expense
+		dataType: double
+		lineageTag: 7820a1f3-e268-4a24-8f1f-280f26be7d32
+		summarizeBy: sum
+		sourceColumn: rnd_expense
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column capex
+		dataType: double
+		lineageTag: 0490788a-2880-4693-9fa2-66e9f18c1855
+		summarizeBy: sum
+		sourceColumn: capex
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column operating_cash_flow
+		dataType: double
+		lineageTag: 828f7a6d-8a74-46db-ac87-b8b31cd7f665
+		summarizeBy: sum
+		sourceColumn: operating_cash_flow
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_assets
+		dataType: double
+		lineageTag: ea73de32-9015-42e3-9a3d-dd19d5e97cda
+		summarizeBy: sum
+		sourceColumn: total_assets
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_liabilities
+		dataType: double
+		lineageTag: 68701f6f-301d-4b01-8f43-a166edf96385
+		summarizeBy: sum
+		sourceColumn: total_liabilities
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column stockholders_equity
+		dataType: double
+		lineageTag: 382b19a4-56db-49da-b6de-316b48b13e16
+		summarizeBy: sum
+		sourceColumn: stockholders_equity
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column cash_and_equivalents
+		dataType: double
+		lineageTag: f74c1c26-870a-4906-84d3-b3af5de628dd
+		summarizeBy: sum
+		sourceColumn: cash_and_equivalents
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column eps_diluted
+		dataType: double
+		lineageTag: e193cb9b-8867-42af-a5cb-d91772565051
+		summarizeBy: sum
+		sourceColumn: eps_diluted
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column company_name
+		dataType: string
+		lineageTag: f5137ad9-b36e-4c77-99d7-db7a803ca98e
+		summarizeBy: none
+		sourceColumn: company_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column gics_sector
+		dataType: string
+		lineageTag: 4ff65827-df3c-41ff-9f09-db76753f2838
+		summarizeBy: none
+		sourceColumn: gics_sector
+
+		annotation SummarizationSetBy = Automatic
+
+	column gics_sub_industry
+		dataType: string
+		lineageTag: 40917bae-2f77-4812-b7c1-8b59a0fa9928
+		summarizeBy: none
+		sourceColumn: gics_sub_industry
+
+		annotation SummarizationSetBy = Automatic
+
+	column net_margin
+		dataType: double
+		lineageTag: 4cfa849d-fb38-4e4f-9f6b-cfa7185a19f6
+		summarizeBy: sum
+		sourceColumn: net_margin
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column rnd_intensity
+		dataType: double
+		lineageTag: f60096da-1faf-46c3-8540-835c3c076f15
+		summarizeBy: sum
+		sourceColumn: rnd_intensity
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition mart_fundamentals = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405618743944849.9.azuredatabricks.net", "/sql/1.0/warehouses/4dbe468336982c0d", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    sp500_Database = Source{[Name="sp500",Kind="Database"]}[Data],
+				    gold_Schema = sp500_Database{[Name="gold",Kind="Schema"]}[Data],
+				    mart_fundamentals_Table = gold_Schema{[Name="mart_fundamentals",Kind="Table"]}[Data]
+				in
+				    mart_fundamentals_Table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

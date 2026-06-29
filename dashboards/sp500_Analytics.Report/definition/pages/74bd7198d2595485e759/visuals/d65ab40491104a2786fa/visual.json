@@ -1,0 +1,67 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "d65ab40491104a2786fa",
+  "position": {
+    "x": 20,
+    "y": 100,
+    "z": 1000,
+    "height": 280,
+    "width": 620,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_fundamentals"
+                    }
+                  },
+                  "Property": "fiscal_year"
+                }
+              },
+              "queryRef": "mart_fundamentals.fiscal_year",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_fundamentals"
+                    }
+                  },
+                  "Property": "revenue"
+                }
+              },
+              "queryRef": "mart_fundamentals.revenue"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_fundamentals"
+                    }
+                  },
+                  "Property": "net_income"
+                }
+              },
+              "queryRef": "mart_fundamentals.net_income"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+table dim_tickers
+	lineageTag: 14e981c3-48b8-481a-993f-ad0937961d40
+
+	measure 'Company Count' = COUNTROWS(dim_tickers)
+		formatString: #,0
+		lineageTag: 9a1b2c3d-4e5f-4061-b273-1a2b3c4d5e6f
+
+	column ticker
+		dataType: string
+		lineageTag: fb815d2d-973d-4332-9ba9-bef080f41469
+		summarizeBy: none
+		sourceColumn: ticker
+
+		annotation SummarizationSetBy = Automatic
+
+	column company_name
+		dataType: string
+		lineageTag: bf35961d-a710-4180-9315-375e1212b202
+		summarizeBy: none
+		sourceColumn: company_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column gics_sector
+		dataType: string
+		lineageTag: e02e3cb2-c351-4032-8589-8b616a38fb3f
+		summarizeBy: none
+		sourceColumn: gics_sector
+
+		annotation SummarizationSetBy = Automatic
+
+	column gics_sub_industry
+		dataType: string
+		lineageTag: bf9be3b6-9016-4db4-a34c-d5a44209481e
+		summarizeBy: none
+		sourceColumn: gics_sub_industry
+
+		annotation SummarizationSetBy = Automatic
+
+	column cik
+		dataType: string
+		lineageTag: 37d15f33-08ed-4a18-a788-7d13176fede0
+		summarizeBy: none
+		sourceColumn: cik
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_tickers = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405618743944849.9.azuredatabricks.net", "/sql/1.0/warehouses/4dbe468336982c0d", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    sp500_Database = Source{[Name="sp500",Kind="Database"]}[Data],
+				    gold_Schema = sp500_Database{[Name="gold",Kind="Schema"]}[Data],
+				    dim_tickers_Table = gold_Schema{[Name="dim_tickers",Kind="Table"]}[Data]
+				in
+				    dim_tickers_Table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

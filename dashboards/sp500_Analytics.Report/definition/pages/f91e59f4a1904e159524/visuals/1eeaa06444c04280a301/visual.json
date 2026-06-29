@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "1eeaa06444c04280a301",
+  "position": {
+    "x": 980,
+    "y": 20,
+    "z": 0,
+    "height": 60,
+    "width": 280,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_material_facts"
+                    }
+                  },
+                  "Property": "Material Fact Count"
+                }
+              },
+              "queryRef": "mart_ai_material_facts.Material Fact Count"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

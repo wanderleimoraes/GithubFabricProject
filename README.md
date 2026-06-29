@@ -15,6 +15,11 @@ and AI-friendly analytics (natural-language Q&A + Power BI dashboards).
 
 ## Architecture
 
+![Architecture diagram](dashboards/architecture.png)
+
+<details>
+<summary>Text (ASCII) version</summary>
+
 ```
                               ┌────────────────────────────────────────────┐
    PUBLIC DATA SOURCES        │              AZURE DATABRICKS               │
@@ -42,6 +47,8 @@ and AI-friendly analytics (natural-language Q&A + Power BI dashboards).
                                       │  + NL Q&A interface    │
                                       └───────────────────────┘
 ```
+
+</details>
 
 See [`docs/architecture.md`](docs/architecture.md) for the detailed design,
 data model, and the Medallion (Bronze/Silver/Gold) layering rationale.
@@ -124,17 +131,60 @@ dbt docs generate && dbt docs serve
 
 ---
 
+## Synthetic vs. real data
+
+The repo runs out-of-the-box on **synthetic sample data** (3 companies, fabricated
+numbers, `example.com` source links) so dbt, the NL Q&A app, and the dashboards work
+offline and for free. The bundled snapshot in `nl_query/sample_data/` is synthetic too.
+
+To replace it with **real data** (live SEC EDGAR + Yahoo Finance + LLM extraction),
+run this on your machine (needs internet and `ANTHROPIC_API_KEY` in `.env`):
+
+```bash
+# 1. Real ingestion
+python -m ingestion.sp500_constituents
+python -m ingestion.market_prices
+python -m ingestion.edgar_fundamentals
+python -m ingestion.edgar_filings
+
+# 2. Real LLM extraction (start with a small --limit to check cost)
+python -m extraction.ai_commitment_extractor --limit 50
+python -m extraction.ai_material_facts_extractor --limit 50
+
+# 3. Rebuild the warehouse
+cd dbt/sp500_analytics
+dbt build --target duckdb          # local; or --target databricks for the cloud
+cd ../..
+
+# 4. Refresh the deployed NL Q&A app's bundled snapshot, then commit
+python -m scripts.export_nl_query_sample
+git add nl_query/sample_data/*.parquet
+git commit -m "Refresh NL Q&A bundle with real data" && git push
+```
+
+For the **Databricks/Power BI** side, also re-upload the refreshed Bronze Parquet to
+the Unity Catalog volume and rebuild on `--target databricks` (see
+[`docs/cloud-setup.md`](docs/cloud-setup.md) Part A6b), then refresh in Power BI.
+
+> Until you run the above, everything works — it's just showing synthetic data.
+
+---
+
 ## Roadmap
 
 - [x] Repository scaffold, architecture docs, dbt project skeleton
 - [x] Ingestion scripts (S&P 500 list, yfinance prices, EDGAR fundamentals/filings)
 - [x] AI industry events seed file
-- [ ] Wire ingestion output to Databricks Bronze (Delta)
-- [ ] Flesh out Silver/Gold dbt models + tests
-- [ ] LLM AI-commitment extraction pipeline
-- [ ] Natural-language Q&A app
-- [ ] Power BI dashboards + screenshots
-- [ ] Databricks Jobs orchestration + CI
+- [x] Ingestion output loaded to Databricks Bronze (Delta / Unity Catalog)
+- [x] Silver/Gold dbt models + tests (medallion; star schema with `dim_tickers`)
+- [x] LLM extraction pipeline (AI commitments + material AI facts, source-linked)
+- [x] Natural-language Q&A app (ontology-grounded text-to-SQL; deployed to Streamlit)
+- [x] Power BI semantic model + 5-page Direct Lake report (DAX measures, Deneb visual)
+- [x] CI (dbt build on DuckDB + ruff) and Delta `OPTIMIZE`/`ZORDER` post-hooks
+- [ ] Power BI report screenshots for the portfolio
+- [ ] Microsoft Fabric: F2 capacity → mirror catalog → Direct Lake (awaiting quota)
+- [ ] Fabric IQ Ontology + data agent (Copilot / Claude-over-MCP)
+- [ ] Databricks Jobs orchestration (scheduled refresh)
 
 ---
 

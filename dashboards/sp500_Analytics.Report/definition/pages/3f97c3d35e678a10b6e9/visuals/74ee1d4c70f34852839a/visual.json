@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "74ee1d4c70f34852839a",
+  "position": {
+    "x": 450,
+    "y": 160,
+    "z": 0,
+    "height": 150,
+    "width": 380,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_ai_commitments"
+                    }
+                  },
+                  "Property": "Total AI Committed"
+                }
+              },
+              "queryRef": "mart_ai_commitments.Total AI Committed"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
