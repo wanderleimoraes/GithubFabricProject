@@ -124,7 +124,10 @@ def narrate(client: Anthropic, question: str, df: pd.DataFrame) -> str:
                 "role": "user",
                 "content": (
                     f"Question: {question}\n\nResult (first rows):\n{preview}\n\n"
-                    "Give a concise, factual 2-3 sentence answer. No preamble."
+                    "Answer in 2-3 sentences using ONLY the numbers and rows shown in "
+                    "the result above. Do not add facts, figures, or company details that "
+                    "aren't in the data. If the result is empty, say there is no matching "
+                    "data. No preamble."
                 ),
             }
         ],
@@ -213,18 +216,35 @@ def main() -> None:
                                    index=all_cols.index(default_x))
             y_col = col3.selectbox("Y axis / Values", numeric, index=0)
 
-        if chart_type == "Line":
-            st.line_chart(df.set_index(x_col)[[y_col]])
-        elif chart_type == "Bar":
-            st.bar_chart(df.set_index(x_col)[[y_col]])
-        elif chart_type == "Area":
-            st.area_chart(df.set_index(x_col)[[y_col]])
-        elif chart_type == "Scatter":
-            st.plotly_chart(px.scatter(df, x=x_col, y=y_col), use_container_width=True)
-        elif chart_type == "Histogram":
-            st.plotly_chart(px.histogram(df, x=x_col), use_container_width=True)
-        else:  # Pie
-            st.plotly_chart(px.pie(df, names=x_col, values=y_col), use_container_width=True)
+        def _xy():
+            # X and Y must be different columns; set_index moves X out of the frame.
+            if not y_col or x_col == y_col or y_col not in df.columns:
+                st.info("Pick different columns for the X and Y axes to draw this chart.")
+                return None
+            return df.set_index(x_col)[[y_col]]
+
+        try:
+            if chart_type == "Line":
+                data = _xy()
+                if data is not None:
+                    st.line_chart(data)
+            elif chart_type == "Bar":
+                data = _xy()
+                if data is not None:
+                    st.bar_chart(data)
+            elif chart_type == "Area":
+                data = _xy()
+                if data is not None:
+                    st.area_chart(data)
+            elif chart_type == "Scatter":
+                st.plotly_chart(px.scatter(df, x=x_col, y=y_col), use_container_width=True)
+            elif chart_type == "Histogram":
+                st.plotly_chart(px.histogram(df, x=x_col), use_container_width=True)
+            else:  # Pie
+                st.plotly_chart(px.pie(df, names=x_col, values=y_col), use_container_width=True)
+        except Exception as exc:  # noqa: BLE001 - never crash the app on a chart axis mismatch
+            st.warning(f"Couldn't draw this chart for the selected columns ({exc}). "
+                       "Try different axes or another chart type.")
 
 
 if __name__ == "__main__":
