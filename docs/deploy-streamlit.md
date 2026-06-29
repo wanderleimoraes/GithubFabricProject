@@ -29,10 +29,10 @@ git push origin claude/sp500-data-portfolio-sinj32
 
 1. Make sure your branch is pushed to GitHub (it is).
 2. Go to **https://share.streamlit.io** and sign in with GitHub. Authorize access to
-   the `wanderleimoraes/GithubFabricProject` repo.
+   the `wanderleimoraes/sp500-ai-analytics` repo.
 3. Click **Create app** → **Deploy a public app from GitHub**.
 4. Fill in:
-   - **Repository:** `wanderleimoraes/GithubFabricProject`
+   - **Repository:** `wanderleimoraes/sp500-ai-analytics`
    - **Branch:** `claude/sp500-data-portfolio-sinj32` (or `main` after you merge)
    - **Main file path:** `nl_query/app.py`
 5. Click **Advanced settings → Secrets** and paste (your real values):
