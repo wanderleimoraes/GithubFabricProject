@@ -41,6 +41,9 @@ data/
 # Learning curriculum — kept locally, not part of the public portfolio repo
 learn/
 
+# Stray dbt tutorial project (created by accident, not part of this repo)
+jaffle_shop/
+
 # OS / editors
 .DS_Store
 .vscode/
