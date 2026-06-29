@@ -1,2 +1,12 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# GitHub Linguist language stats: surface the hand-written code (Python + dbt SQL),
+# not generated Power BI / data artifacts.
+# Power BI PBIP project (TMDL + PBIR JSON) is generated BI config, not source code.
+dashboards/** linguist-vendored
+# Bundled sample data that ships with the app — data, not code.
+nl_query/sample_data/** linguist-generated
+# Ensure dbt models are counted as SQL.
+*.sql linguist-detectable=true
+*.sql linguist-language=SQL
