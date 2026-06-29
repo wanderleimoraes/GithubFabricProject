@@ -187,6 +187,8 @@ def main() -> None:
 
     st.subheader("Answer")
     st.write(narrate(client, question, df))
+    st.caption("⚠️ AI-generated from the query above. Check the **Generated SQL** and "
+               "**Result** below to verify — the answer is only as correct as the query.")
 
     st.subheader("Result")
     st.dataframe(df, use_container_width=True)
