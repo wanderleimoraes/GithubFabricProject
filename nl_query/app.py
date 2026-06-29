@@ -135,10 +135,40 @@ def narrate(client: Anthropic, question: str, df: pd.DataFrame) -> str:
     return msg.content[0].text.strip()
 
 
+def render_reference_sidebar() -> None:
+    """Always-visible reference so users know what they can ask."""
+    with st.sidebar:
+        st.header("💡 What you can ask")
+        st.markdown(
+            "**Try these examples:**\n"
+            "- Top 15 companies by R&D spend over the last 5 years\n"
+            "- Total revenue by sector\n"
+            "- Apple's year-over-year revenue growth\n"
+            "- Companies with the highest net margin last year\n"
+            "- Total AI committed by sector\n"
+            "- Most significant AI partnership facts in the last 5 years, with sources\n"
+            "- Which companies outperformed their sector on the latest trading day\n"
+            "- Do companies with higher R&D intensity make larger AI commitments?"
+        )
+        st.markdown(
+            "**Keywords it understands:**\n"
+            "- **Companies / sectors:** ticker, company name, GICS sector\n"
+            "- **Fundamentals:** revenue, net income, R&D expense, capex, net margin, "
+            "R&D intensity, EPS\n"
+            "- **Prices:** close, adjusted close, daily return, 50/200-day moving average\n"
+            "- **AI commitments:** committed amount (USD), confidence, vs revenue\n"
+            "- **AI material facts:** partnerships, products, capex, acquisitions, "
+            "research, with source links\n"
+            "- **Time:** last N years, latest, year-over-year (uses real dates)"
+        )
+        st.caption("Tip: it generates SQL — check the **Generated SQL** to verify any answer.")
+
+
 def main() -> None:
     st.set_page_config(page_title="SP500 AI Analytics — Ask anything", layout="wide")
     st.title("📈 SP500 AI-Era Analytics — Natural-Language Q&A")
     st.caption("Ask about fundamentals, prices, or AI commitments. Backed by dbt Gold marts.")
+    render_reference_sidebar()
 
     if not check_password():
         return
