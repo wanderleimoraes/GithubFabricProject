@@ -186,9 +186,22 @@ tenant that gives you an organisational `@*.onmicrosoft.com` account Fabric acce
 2. Fields:
    - **Resource group:** `rg-sp500`.
    - **Capacity name:** `sp500fabric`.
+   - **Region:** **Sweden Central** *(see region note below)*.
    - **Size:** **F2** (smallest).
    - **Fabric capacity administrator:** select `fabricadmin@...`.
 3. **Review + create** → **Create**.
+
+> **Region decision (what actually happened).** West Europe — the region hosting the
+> Databricks workspace — would have co-located Fabric with the Delta files. But West
+> Europe Fabric quota for a new subscription was **0**, and **both** a support ticket
+> *and* a self-service quota request to raise it to 2 were **declined** (West Europe is
+> a capacity-constrained region for new subscriptions). Several other EU regions already
+> showed a standing quota of 4 CU, so Fabric F2 was provisioned in **Sweden Central**
+> instead. The OneLake shortcut (Part C4) therefore reads the West Europe Delta files
+> **cross-region** — a negligible first-load latency / tiny egress cost for a
+> portfolio-size model, and a clean talking point: *compute region decoupled from
+> storage region over the same OneLake shortcut.* Databricks stays in West Europe; only
+> the Fabric capacity is in Sweden Central.
 
 > F2 bills ~€0.30/hr while running. **Pause it** (Azure Portal → the capacity resource
 > → **Pause**) whenever you're not actively building.
