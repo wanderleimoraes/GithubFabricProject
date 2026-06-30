@@ -424,6 +424,66 @@ keys. Only the engine behind the keys gets upgraded.
 
 ---
 
+## Part H — Fabric IQ Ontology (the native ontology; preview)
+
+> **Status when written:** the Data Agent (`sp500_agent`) already answers NL questions
+> grounded on the `sp500_directlake` semantic model + its `///` descriptions — that
+> descriptive layer *is* an ontology for the agent. Part H adds the **native Fabric IQ
+> *Ontology* item**: a formal entity/relationship/property layer **generated from the
+> semantic model**, with an NL2Ontology query layer, reusable across Copilot Studio,
+> Azure AI Foundry, and Claude via the Fabric IQ Ontology MCP. It is the native
+> implementation of `nl_query/ontology.py` — *same vocabulary, native engine.*
+>
+> ⚠️ **Preview.** Workload toggles and UI labels shift; treat the steps as a map, not a
+> contract. It runs on the **F2 capacity** — only do this with the capacity running, and
+> **pause it after.**
+
+### H1. Enable the Fabric IQ workload
+1. Fabric → **Admin portal → Tenant settings** → enable **Fabric IQ** / **Ontology**
+   (and keep **Copilot and Azure OpenAI** on). Some tenants also gate it behind
+   **Account manager → Preview features**.
+2. Confirm **Ontology** appears under **+ New item** (look for the *Fabric IQ* group).
+
+### H2. Generate the ontology from the semantic model
+1. Workspace `sp500-analytics` → **+ New item → Ontology** → name `sp500_ontology`.
+2. Choose **Generate from a Power BI semantic model** → select **`sp500_directlake`**.
+   It bootstraps entity types from your tables, properties from columns, and
+   relationships from the model's relationships — which is why the star schema +
+   descriptions you built matter here.
+
+### H3. Curate the entities (map to nl_query/ontology.py)
+Rename/confirm the generated types to match our vocabulary, so both engines speak the
+same language:
+- `dim_tickers` → **Company** (key: ticker)
+- `mart_fundamentals` → **Fundamentals** (grain: ticker + period_end)
+- `mart_prices` → **PriceDay** (grain: ticker + trade_date)
+- `mart_ai_commitments` → **AICommitment**
+- `mart_ai_material_facts` → **AIMaterialFact**
+- `mart_ai_events` → **AIEvent** (standalone; relate only via related_ticker)
+
+Carry over the metric definitions and the **time-window rule** (period_end over
+fiscal_year) as descriptions/rules on the relevant properties.
+
+### H4. Ground the agent on the ontology (optional re-point)
+Either keep `sp500_agent` on the semantic model, or add/point it at `sp500_ontology`
+as a data source so answers route through the **NL2Ontology** layer.
+
+### H5. Reach the ontology from Claude (Fabric IQ Ontology MCP)
+The ontology is callable over MCP — so Claude (Claude Code / Desktop / a custom app)
+can use it as a tool. You need the **Workspace ID** and **Ontology ID** (find both in
+the OneLake catalog or the ontology item's URL). Register the **Fabric IQ Ontology MCP
+(preview)** connection in the client (Copilot Studio shows this natively under
+**Tools → Model Context Protocol → Fabric IQ Ontology**); for Claude, register the same
+MCP endpoint with a bearer token from `az account get-access-token --resource
+https://api.fabric.microsoft.com`.
+
+**✅ Checkpoint + artifact:** ask the ontology a question via NL2Ontology (e.g. "total AI
+committed by sector") and confirm a grounded answer. **Screenshot** →
+`dashboards/cloud_fabric_iq_ontology.png`. That completes the "same ontology, native
+implementation" story.
+
+---
+
 ## Part F — Teardown checklist (before 2026-07-24)
 
 Delete in this order to stop all billing. Even with credit, leaving resources up past
