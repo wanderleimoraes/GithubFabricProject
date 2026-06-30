@@ -1,15 +1,14 @@
-"""Structure candidate AI news (from GDELT) into industry events using Claude.
+"""Structure curated AI-timeline text (from Wikipedia) into industry events with Claude.
 
-This is the grounded replacement for the hand-curated ``ai_industry_events`` seed.
-It reads the Bronze ``ai_industry_news`` candidates (real article URLs + dates) and
-asks Claude to identify the genuinely *notable* AI industry events, de-duplicate the
-inevitable repeated coverage, and emit one structured row per event in the
-``mart_ai_events`` shape — always keeping a real ``url`` and date from the source
-articles so every event is traceable.
+The grounded replacement for the hand-curated ``ai_industry_events`` seed. It reads the
+Bronze ``ai_event_sources`` candidates (chunked text from Wikipedia AI-timeline pages,
+each with the page ``url``) and asks Claude to extract the notable AI industry events —
+parsing each event's date from the text, de-duplicating, and emitting one row per event
+in the ``mart_ai_events`` shape, always keeping the source ``url``.
 
-Pipeline position: Bronze ``ai_industry_news`` -> (this) -> Bronze ``ai_events`` -> dbt.
+Pipeline position: Bronze ``ai_event_sources`` -> (this) -> Bronze ``ai_events`` -> dbt.
 
-Run: ``python -m extraction.ai_event_extractor [--batch-size 40] [--max-batches N]``
+Run: ``python -m extraction.ai_event_extractor [--batch-size 6] [--max-batches N]``
 """
 
 from __future__ import annotations
@@ -35,61 +34,56 @@ VENDOR_TICKER = {
     "amazon": "AMZN", "aws": "AMZN", "apple": "AAPL", "tesla": "TSLA",
 }
 
-EXTRACTION_PROMPT = """You are a technology-industry analyst. Below is a JSON list of \
-news articles (title, date, domain, url) about artificial intelligence.
+EXTRACTION_PROMPT = """You are a technology-industry analyst. Below are excerpts from \
+curated Wikipedia timelines of artificial intelligence (with the page url they came from).
 
-Identify the genuinely NOTABLE AI industry events they describe — major model or \
-product launches, large investments/funding, significant partnerships, acquisitions, \
-research breakthroughs, or regulation. De-duplicate: when several articles cover the \
-same event, emit it ONCE, choosing the most authoritative article's url and the \
-earliest date.
+Extract the genuinely NOTABLE AI industry events described — major model or product \
+launches, large investments/funding, significant partnerships, acquisitions, research \
+breakthroughs, or regulation. Parse each event's DATE from the text. De-duplicate events \
+that repeat across excerpts.
 
 Return a JSON array. Each element must have exactly these keys:
-- "event_date": the event date as "YYYY-MM-DD" (use the article date)
+- "event_date": the event date as "YYYY-MM-DD" (use "YYYY-MM-01" if only month known, \
+"YYYY-01-01" if only year known)
 - "vendor": the primary organization (e.g. "OpenAI", "Nvidia", "Google", "EU")
 - "event_name": a concise (<=12 word) neutral title of the event
 - "category": one of "product_launch", "investment", "partnership", "acquisition", \
 "research", "regulation", "other"
 - "significance": one of "high", "medium", "low"
-- "url": the source url, copied EXACTLY from one of the provided articles
+- "url": the source url, copied EXACTLY from the excerpt the event came from
 
-Rules: only use the articles provided; never invent a url or an event not supported \
-by them. Skip routine/opinion/duplicate coverage. If none qualify, return [].
+Rules: only use the text provided; never invent an event or a url. Skip routine or \
+duplicate items. If none qualify, return [].
 
-Articles:
+Excerpts:
 ---
-{articles}
+{excerpts}
 ---
 Return only the JSON array, no prose."""
 
 
 def _load_candidates() -> pd.DataFrame:
-    path = bronze_path("ai_industry_news") / "ai_industry_news.parquet"
+    path = bronze_path("ai_event_sources") / "ai_event_sources.parquet"
     if not path.exists():
         raise FileNotFoundError(
-            "ai_industry_news.parquet not found. Run "
-            "`python -m ingestion.ai_industry_news` first."
+            "ai_event_sources.parquet not found. Run "
+            "`python -m ingestion.ai_events_wikipedia` first."
         )
     df = pd.read_parquet(path)
-    return df.dropna(subset=["url", "title"]).reset_index(drop=True)
+    return df.dropna(subset=["content", "url"]).reset_index(drop=True)
 
 
 def extract_events(client: Anthropic, batch: pd.DataFrame) -> list[dict]:
-    articles = [
-        {
-            "title": r["title"],
-            "date": str(r["seen_date"]) if pd.notna(r["seen_date"]) else None,
-            "domain": r["domain"],
-            "url": r["url"],
-        }
+    excerpts = [
+        {"url": r["url"], "source": r["title"], "text": r["content"]}
         for _, r in batch.iterrows()
     ]
     message = client.messages.create(
         model=MODEL,
-        max_tokens=3000,
+        max_tokens=4000,
         messages=[{
             "role": "user",
-            "content": EXTRACTION_PROMPT.format(articles=json.dumps(articles, default=str)),
+            "content": EXTRACTION_PROMPT.format(excerpts=json.dumps(excerpts, default=str)),
         }],
     )
     raw = message.content[0].text.strip()
@@ -107,8 +101,8 @@ def _related_ticker(vendor: str | None) -> str | None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Structure AI news into industry events.")
-    parser.add_argument("--batch-size", type=int, default=40, help="Articles per LLM call.")
+    parser = argparse.ArgumentParser(description="Structure AI-timeline text into events.")
+    parser.add_argument("--batch-size", type=int, default=6, help="Text chunks per LLM call.")
     parser.add_argument("--max-batches", type=int, default=None, help="Cap number of batches.")
     args = parser.parse_args()
 
@@ -120,7 +114,7 @@ def main() -> None:
     n_batches = (len(candidates) + args.batch_size - 1) // args.batch_size
     if args.max_batches:
         n_batches = min(n_batches, args.max_batches)
-    print(f"Structuring {len(candidates)} candidate articles in {n_batches} batches...")
+    print(f"Structuring {len(candidates)} source chunks in {n_batches} batches...")
 
     records: list[dict] = []
     for b in range(n_batches):

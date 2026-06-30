@@ -100,7 +100,7 @@ The cloud build (provisioning guide: [`docs/cloud-setup.md`](docs/cloud-setup.md
 | [SEC EDGAR](https://www.sec.gov/edgar/sec-api-documentation) | XBRL fundamentals (10-K/10-Q), 8-K filings | None (User-Agent required) | Bulk + per-company APIs |
 | [yfinance](https://github.com/ranaroussi/yfinance) | Daily OHLCV prices | None | ~5y daily history |
 | SEC 8-K / 10-K / 10-Q | AI commitments & material facts (LLM-extracted) | None (User-Agent required) | Verbatim text + `source_url` per row |
-| [GDELT DOC API](https://api.gdeltproject.org/api/v2/doc/doc) | AI industry-event news (LLM-structured) | None | Real article URLs → `extraction/ai_event_extractor` |
+| [Wikipedia AI timelines](https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence) | AI industry events (LLM-structured) | None (UA required) | Citation-backed; spans years → `extraction/ai_event_extractor` |
 
 ---
 
@@ -199,7 +199,7 @@ the Unity Catalog volume and rebuild on `--target databricks` (see
 
 - [x] Repository scaffold, architecture docs, dbt project skeleton
 - [x] Ingestion scripts (S&P 500 list, yfinance prices, EDGAR fundamentals/filings)
-- [x] AI industry events — grounded ingestion (GDELT news → LLM-structured), replacing the seed
+- [x] AI industry events — grounded ingestion (Wikipedia AI timelines → LLM-structured), replacing the seed
 - [x] Ingestion output loaded to Databricks Bronze (Delta / Unity Catalog)
 - [x] Silver/Gold dbt models + tests (medallion; star schema with `dim_tickers`)
 - [x] LLM extraction pipeline (AI commitments + material AI facts, source-linked)
