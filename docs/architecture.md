@@ -30,8 +30,8 @@ credits. The warehouse is selected via the dbt `target` (`databricks` vs `duckdb
 | Market prices | yfinance | company × date (daily OHLCV) | ~0.6M rows |
 | Fundamentals | SEC EDGAR XBRL `companyfacts` | company × fiscal period × metric | ~1–3M rows (long format) |
 | Filings | SEC EDGAR `submissions` (8-K) | company × filing | ~50–100K rows |
-| AI commitments | LLM extraction over transcripts/8-Ks | company × event × amount | curated/derived |
-| AI industry events | curated seed CSV | event date × vendor | dozens |
+| AI commitments / material facts | LLM extraction over 8-K / 10-K / 10-Q | company × event | derived, source-linked |
+| AI industry events | GDELT news → LLM-structured | event date × vendor | derived, source-linked |
 
 > **On "big data":** daily prices alone are small. Volume comes from breadth — the long-format
 > EDGAR fundamentals (every XBRL fact, every period, every company) plus filings metadata push

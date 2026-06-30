@@ -49,14 +49,14 @@ Filing text:
 Return only the JSON array, no prose."""
 
 
-def _load_filings(limit: int | None) -> pd.DataFrame:
+def _load_filings(limit: int | None, forms: set[str]) -> pd.DataFrame:
     path = bronze_path("filings") / "filings.parquet"
     if not path.exists():
         raise FileNotFoundError(
             "filings.parquet not found. Run `python -m ingestion.edgar_filings` first."
         )
     df = pd.read_parquet(path)
-    df = df[df["form"] == "8-K"]
+    df = df[df["form"].isin(forms)]
     df = df.sort_values("filing_date", ascending=False)
     return df.head(limit) if limit else df
 
@@ -86,16 +86,20 @@ def extract_commitments(client: Anthropic, filing_text: str) -> list[dict]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Extract AI commitments from 8-K filings.")
-    parser.add_argument("--limit", type=int, default=25, help="Max filings to process.")
+    parser = argparse.ArgumentParser(description="Extract AI commitments from SEC filings.")
+    parser.add_argument("--limit", type=int, default=200, help="Max filings to process.")
+    parser.add_argument(
+        "--forms", nargs="+", default=["8-K", "10-K", "10-Q"],
+        help="Filing forms to scan (10-K/10-Q carry richer AI discussion than 8-K).",
+    )
     args = parser.parse_args()
 
     if not os.getenv("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY is not set. See .env.example.")
 
     client = Anthropic()
-    filings = _load_filings(args.limit)
-    print(f"Scanning {len(filings)} 8-K filings for AI commitments...")
+    filings = _load_filings(args.limit, set(args.forms))
+    print(f"Scanning {len(filings)} {sorted(set(args.forms))} filings for AI commitments...")
 
     records: list[dict] = []
     for _, f in filings.iterrows():

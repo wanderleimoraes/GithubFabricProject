@@ -176,6 +176,32 @@ def main() -> None:
         ),
     )
 
+    _write(
+        "ai_events",
+        pd.DataFrame(
+            [
+                {
+                    "event_date": dt.date(2022, 11, 30),
+                    "vendor": "OpenAI",
+                    "event_name": "ChatGPT public launch",
+                    "category": "product_launch",
+                    "related_ticker": "MSFT",
+                    "significance": "high",
+                    "url": "https://example.com/news/chatgpt-launch",
+                },
+                {
+                    "event_date": dt.date(2023, 1, 23),
+                    "vendor": "Microsoft",
+                    "event_name": "Microsoft extends multibillion-dollar OpenAI investment",
+                    "category": "investment",
+                    "related_ticker": "MSFT",
+                    "significance": "high",
+                    "url": "https://example.com/news/msft-openai",
+                },
+            ]
+        ),
+    )
+
 
 if __name__ == "__main__":
     main()
