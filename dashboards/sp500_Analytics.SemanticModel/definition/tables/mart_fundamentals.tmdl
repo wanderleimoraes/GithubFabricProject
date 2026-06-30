@@ -1,6 +1,8 @@
+/// Gold fact: one row per company per fiscal reporting period. Income-statement, balance-sheet and cash-flow figures sourced from SEC filings, plus precomputed ratios. Grain = ticker + period_end. Use period_end (date) for time windows, not fiscal_year (integer label).
 table mart_fundamentals
 	lineageTag: 3fa127c9-cd9b-458d-81c8-b6334f25928c
 
+	/// Net income divided by revenue (profitability). Aggregates as SUM(net_income)/SUM(revenue), not an average of row ratios.
 	measure 'Net Margin %' =
 			DIVIDE(
 			    SUM(mart_fundamentals[net_income]),
@@ -9,6 +11,7 @@ table mart_fundamentals
 		formatString: 0.00%;-0.00%;0.00%
 		lineageTag: 53d80d3e-a024-4b12-ad34-10b25fb2c5d5
 
+	/// R&D expense divided by revenue — how research-intensive a company is. Aggregates as SUM(rnd_expense)/SUM(revenue).
 	measure 'RnD Intensity %' =
 			DIVIDE(
 			    SUM(mart_fundamentals[rnd_expense]),
@@ -33,6 +36,7 @@ table mart_fundamentals
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Integer fiscal-year LABEL (e.g. 2025). Companies with non-calendar fiscal years are labelled a year ahead, so MAX(fiscal_year) can be a misleading cohort — prefer period_end for time filters.
 	column fiscal_year
 		dataType: int64
 		formatString: 0
@@ -50,6 +54,7 @@ table mart_fundamentals
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Last day of the fiscal reporting period (a real date). Use THIS for "last N years" / "recent" / "since YYYY" windows.
 	column period_end
 		dataType: dateTime
 		formatString: Long Date
@@ -66,6 +71,7 @@ table mart_fundamentals
 
 		annotation UnderlyingDateTimeDataType = Date
 
+	/// Total revenue (net sales) for the period, in USD.
 	column revenue
 		dataType: double
 		lineageTag: c98f134f-38f8-41ab-8339-33e5c2bd7ec4
@@ -96,6 +102,7 @@ table mart_fundamentals
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Research & development expense for the period, in USD. SUM across periods to total R&D over a window.
 	column rnd_expense
 		dataType: double
 		lineageTag: 7820a1f3-e268-4a24-8f1f-280f26be7d32

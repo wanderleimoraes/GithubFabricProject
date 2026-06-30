@@ -1,6 +1,8 @@
+/// Gold fact: AI-investment commitments a company disclosed in an 8-K filing, LLM-extracted. Grain = ticker + event_date. amount_usd is null when a commitment was not quantified. Includes confidence and ratios vs revenue / operating cash flow. No sector column — join dim_tickers for GICS sector.
 table mart_ai_commitments
 	lineageTag: f85124dd-c829-4459-b722-7a538873c176
 
+	/// Sum of disclosed AI commitment amounts (USD). Unquantified commitments (null amount_usd) are excluded by SUM.
 	measure 'Total AI Committed' = SUM(mart_ai_commitments[amount_usd])
 		formatString: \$#,0.##;(\$#,0.##);\$#,0.##
 		lineageTag: fe613170-2812-4a9a-9ef4-7885b003931a

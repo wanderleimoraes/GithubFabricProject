@@ -1,6 +1,8 @@
+/// Company dimension (the hub of the star schema): one row per S&P 500 constituent. Key = ticker. Holds company_name, GICS sector and sub-industry. Join every fact table to this on ticker.
 table dim_tickers
 	lineageTag: 14e981c3-48b8-481a-993f-ad0937961d40
 
+	/// Distinct count of companies (rows in dim_tickers).
 	measure 'Company Count' = COUNTROWS(dim_tickers)
 		formatString: #,0
 		lineageTag: 9a1b2c3d-4e5f-4061-b273-1a2b3c4d5e6f

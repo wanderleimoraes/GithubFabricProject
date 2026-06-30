@@ -9,7 +9,10 @@ engineering stack — multi-source ingestion, a lakehouse with Medallion archite
 dbt transformations with tests and documentation, an LLM-based extraction pipeline,
 and AI-friendly analytics (natural-language Q&A + Power BI dashboards).
 
-> **Status:** scaffolding / work in progress. See [Roadmap](#roadmap).
+> **Status:** end-to-end pipeline is live on **Microsoft Fabric** — Azure Databricks dbt
+> medallion lakehouse → mirrored into OneLake → **Direct Lake** semantic model → a
+> **Fabric Data Agent** answering natural-language questions, grounded on the model's
+> measures, relationships, and ontology descriptions. See [Roadmap](#roadmap).
 
 ---
 
@@ -52,6 +55,28 @@ and AI-friendly analytics (natural-language Q&A + Power BI dashboards).
 
 See [`docs/architecture.md`](docs/architecture.md) for the detailed design,
 data model, and the Medallion (Bronze/Silver/Gold) layering rationale.
+
+---
+
+## Live on Microsoft Fabric
+
+The cloud build (provisioning guide: [`docs/cloud-setup.md`](docs/cloud-setup.md)):
+
+1. **Azure Databricks** (West Europe) runs the dbt medallion build into a Unity Catalog
+   `sp500.gold` schema (Delta).
+2. The catalog is **mirrored into OneLake** as a zero-copy, auto-syncing
+   *Mirrored Azure Databricks catalog* (Fabric capacity in Sweden Central — provisioned
+   cross-region after West Europe Fabric quota was unavailable).
+3. A **Direct Lake on OneLake** semantic model (`sp500_directlake`) rebuilds the
+   `dim_tickers` star schema with DAX measures and ontology descriptions.
+4. A **Fabric Data Agent** (`sp500_agent`) answers natural-language questions over that
+   model — the project's "ask it yourself" endpoint. Its grounding instructions
+   ([`docs/fabric-data-agent-instructions.md`](docs/fabric-data-agent-instructions.md))
+   are the Fabric implementation of the same ontology used by the Streamlit app
+   ([`nl_query/ontology.py`](nl_query/ontology.py)) — *same vocabulary, two engines.*
+
+<!-- Screenshots (added before teardown): dashboards/cloud_directlake_model.png,
+     dashboards/cloud_data_agent.png -->
 
 ---
 
@@ -181,9 +206,11 @@ the Unity Catalog volume and rebuild on `--target databricks` (see
 - [x] Natural-language Q&A app (ontology-grounded text-to-SQL; deployed to Streamlit)
 - [x] Power BI semantic model + 5-page Direct Lake report (DAX measures, Deneb visual)
 - [x] CI (dbt build on DuckDB + ruff) and Delta `OPTIMIZE`/`ZORDER` post-hooks
+- [x] Microsoft Fabric: F2 capacity → mirrored Databricks catalog → Direct Lake model
+- [x] Fabric **Data Agent** (NL Q&A grounded on the Direct Lake semantic model + ontology)
+- [ ] Fabric IQ **Ontology** item generated from the semantic model (preview)
 - [ ] Power BI report screenshots for the portfolio
-- [ ] Microsoft Fabric: F2 capacity → mirror catalog → Direct Lake (awaiting quota)
-- [ ] Fabric IQ Ontology + data agent (Copilot / Claude-over-MCP)
+- [ ] Reach the Fabric Data Agent from Claude over MCP
 - [ ] Databricks Jobs orchestration (scheduled refresh)
 
 ---

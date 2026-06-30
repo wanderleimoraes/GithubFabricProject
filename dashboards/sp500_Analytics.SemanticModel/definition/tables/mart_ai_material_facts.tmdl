@@ -1,10 +1,13 @@
+/// Gold fact: material AI facts a company disclosed in SEC filings, LLM-extracted with verbatim text and a source link. Grain = one fact. Broader than commitments — categories include partnership, product, capex, acquisition, research, revenue/demand, governance, risk/regulatory. significance is low/medium/high; amount_usd is set only when the fact was quantified. source_url links to the filing.
 table mart_ai_material_facts
 	lineageTag: d883d0fa-fe8c-49db-9626-872783de6350
 
+	/// Number of disclosed material AI facts (row count).
 	measure 'Material Fact Count' = COUNTROWS(mart_ai_material_facts)
 		formatString: #,0
 		lineageTag: 7c1f0a2b-3d4e-4f50-9a61-2b3c4d5e6f70
 
+	/// Sum of dollar amounts on facts that were quantified (null amounts excluded).
 	measure 'Quantified AI $' = SUM(mart_ai_material_facts[amount_usd])
 		formatString: \$#,0.##;(\$#,0.##);\$#,0.##
 		lineageTag: 8d2e1b3c-4e5f-4061-ab72-3c4d5e6f7081
