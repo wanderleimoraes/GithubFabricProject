@@ -66,7 +66,8 @@ def _fmt(dt: datetime) -> str:
     return dt.strftime("%Y%m%d%H%M%S")
 
 
-def fetch_window(query: str, start: datetime, end: datetime, max_records: int) -> list[dict]:
+def fetch_window(query: str, start: datetime, end: datetime, max_records: int,
+                 max_retries: int = 4) -> list[dict]:
     params = {
         "query": query,
         "mode": "ArtList",
@@ -76,15 +77,20 @@ def fetch_window(query: str, start: datetime, end: datetime, max_records: int) -
         "startdatetime": _fmt(start),
         "enddatetime": _fmt(end),
     }
-    time.sleep(REQUEST_DELAY_SECONDS)
-    resp = requests.get(GDELT_URL, params=params, timeout=60)
-    resp.raise_for_status()
-    # GDELT occasionally returns empty body / non-JSON when a window has no hits.
-    try:
-        payload = resp.json()
-    except ValueError:
-        return []
-    return payload.get("articles", []) or []
+    for attempt in range(max_retries):
+        time.sleep(REQUEST_DELAY_SECONDS * (attempt + 1))  # back off on retries
+        resp = requests.get(GDELT_URL, params=params, timeout=60)
+        if resp.status_code == 429:  # GDELT throttle — wait longer and retry
+            time.sleep(REQUEST_DELAY_SECONDS * (attempt + 2) * 2)
+            continue
+        resp.raise_for_status()
+        # GDELT occasionally returns empty body / non-JSON when a window has no hits.
+        try:
+            payload = resp.json()
+        except ValueError:
+            return []
+        return payload.get("articles", []) or []
+    return []  # exhausted retries (persistent throttle)
 
 
 def _parse_seendate(value: str | None) -> date | None:
