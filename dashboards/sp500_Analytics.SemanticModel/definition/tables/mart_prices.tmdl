@@ -1,6 +1,8 @@
+/// Gold fact: one row per company per trading day. Daily OHLC-style market data with precomputed daily_return and 50/200-day moving averages. Grain = ticker + trade_date.
 table mart_prices
 	lineageTag: 5f9ca2f0-28f6-421a-953c-2b5b46783a4a
 
+	/// Most recent closing price per company (latest trade_date).
 	measure 'Latest Close' =
 			CALCULATE(
 			    LASTNONBLANK(mart_prices[close], 1),
