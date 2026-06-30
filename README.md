@@ -1,5 +1,3 @@
-<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
-
 # SP500 AI-Era Analytics — End-to-End Data Engineering Portfolio
 
 An end-to-end data platform analyzing **S&P 500 companies over the last 5 years**,
