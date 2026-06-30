@@ -234,23 +234,45 @@ tenant that gives you an organisational `@*.onmicrosoft.com` account Fabric acce
 
 1. In the workspace → **New item** → **Lakehouse** → name `sp500_lakehouse` → **Create**.
 
-### C4. OneLake shortcut to the Databricks Delta files
+### C4. Mirror the Databricks catalog into Fabric (what actually worked)
 
 This is the heart of Option C — Fabric reads the *same* Delta files Databricks wrote,
 no copy.
 
-1. In the Lakehouse, under **Tables** → **…** (or **New shortcut**) → **New shortcut**.
-2. Choose **Azure Data Lake Storage Gen2** (the storage backing Unity Catalog) —
-   *or*, if your region supports it, the **Azure Databricks Unity Catalog** shortcut
-   type directly.
-3. Provide the connection:
-   - **URL:** the ADLS Gen2 endpoint backing your `sp500.gold` schema (find it in
-     Databricks → Catalog → `sp500` → `gold` → a table → **Details** → Storage location).
-   - **Authentication:** organizational account or account key.
-4. Select the `gold` folder / mart tables → **Create**.
+> **Why not a raw ADLS Gen2 shortcut.** Our Gold marts are Unity Catalog **managed**
+> tables, so their physical paths are GUID folders under `__unitystorage/catalogs/
+> <catalog-guid>/tables/<table-guid>` — no human-readable names. A raw OneLake shortcut
+> would mean pointing at each GUID folder and renaming it by hand (fragile; breaks when
+> a table is recreated with a new GUID). The **Mirrored Azure Databricks catalog** item
+> discovers tables **by name** via Unity Catalog and is **Generally Available** — use it.
 
-**✅ Checkpoint + artifact:** the four mart tables appear under **Tables** in the
-Lakehouse, marked as shortcuts. **Screenshot** → `dashboards/cloud_onelake_shortcut.png`.
+**Two prerequisites that are OFF by default (this is the usual "no tables load" cause):**
+
+1. **Enable external data access on the Unity Catalog metastore.** Databricks → Catalog
+   → ⚙️ / Account console → Metastore → **External data access → Enabled**. Requires a
+   **metastore/account admin**. Until this is on, Fabric sees zero tables.
+2. **Grant `EXTERNAL USE SCHEMA`** (plus the normal grants) to the identity the Fabric
+   connection authenticates as — run in Databricks SQL:
+   ```sql
+   GRANT USE CATALOG         ON CATALOG sp500      TO `<fabric-identity>`;
+   GRANT USE SCHEMA          ON SCHEMA  sp500.gold TO `<fabric-identity>`;
+   GRANT SELECT              ON SCHEMA  sp500.gold TO `<fabric-identity>`;
+   GRANT EXTERNAL USE SCHEMA ON SCHEMA  sp500.gold TO `<fabric-identity>`;
+   ```
+   `EXTERNAL USE SCHEMA` is the privilege that authorizes an *external engine* (Fabric)
+   to read the tables' Delta files; normal `SELECT` only works inside Databricks.
+
+**Create the mirror:**
+
+1. In the `sp500-analytics` workspace → **+ New item** → **Mirrored Azure Databricks
+   catalog**.
+2. **New connection** → **Databricks workspace URL** (`https://adb-….azuredatabricks.net`)
+   → **Authentication: Organizational account** (Entra/OAuth — no PAT needed).
+3. Select **Catalog `sp500` → Schema `gold` → all tables** (dim_tickers + the marts).
+4. **Create.** Tables appear by name in the workspace, read-only, auto-synced.
+
+**✅ Checkpoint + artifact:** the mart tables appear under the mirrored catalog in the
+workspace, queryable. **Screenshot** → `dashboards/cloud_onelake_shortcut.png`.
 
 ---
 
