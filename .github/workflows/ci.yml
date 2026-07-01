@@ -27,7 +27,7 @@ jobs:
         run: ruff check ingestion extraction nl_query scripts
 
       - name: Unit tests (pytest)
-        run: pytest tests -q
+        run: python -m pytest tests -q
 
       - name: Semantic layer is single-source (agent instructions not stale)
         run: python -m scripts.generate_agent_instructions --check
