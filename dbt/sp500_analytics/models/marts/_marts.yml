@@ -1,6 +1,16 @@
 version: 2
 
 models:
+  - name: dim_date
+    description: >
+      Gold dimension: explicit day-grain calendar (2020-2027). Replaces Power BI's
+      Auto date/time hidden tables; relate fact date columns to `date_day` and
+      disable Auto date/time in the semantic model.
+    columns:
+      - name: date_day
+        description: "Calendar day - the dimension key."
+        data_tests: [not_null, unique]
+
   - name: dim_tickers
     description: >
       Gold dimension: one row per company (ticker). The hub of the star schema —

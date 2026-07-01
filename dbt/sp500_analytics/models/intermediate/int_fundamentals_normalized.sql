@@ -24,7 +24,7 @@ mapped as (
         f.filed_date
     from facts f
     inner join mapping m on f.tag = m.gaap_tag
-    where f.unit in ('USD', 'USD/shares')
+    where f.unit in ('USD', 'USD/shares', 'shares')
 ),
 
 deduped as (

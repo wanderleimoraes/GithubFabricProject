@@ -76,20 +76,21 @@ def main() -> None:
     fundamentals = []
     for t, _, cik in companies:
         for fy in (2022, 2023):
-            for tag, val in [
-                ("Revenues", 2e11),
-                ("NetIncomeLoss", 6e10),
-                ("ResearchAndDevelopmentExpense", 2e10),
-                ("PaymentsToAcquirePropertyPlantAndEquipment", 3e10),
-                ("NetCashProvidedByUsedInOperatingActivities", 8e10),
-                ("Assets", 4e11),
+            for tag, val, unit in [
+                ("Revenues", 2e11, "USD"),
+                ("NetIncomeLoss", 6e10, "USD"),
+                ("ResearchAndDevelopmentExpense", 2e10, "USD"),
+                ("PaymentsToAcquirePropertyPlantAndEquipment", 3e10, "USD"),
+                ("NetCashProvidedByUsedInOperatingActivities", 8e10, "USD"),
+                ("Assets", 4e11, "USD"),
+                ("WeightedAverageNumberOfDilutedSharesOutstanding", 7.5e9, "shares"),
             ]:
                 fundamentals.append(
                     {
                         "ticker": t,
                         "cik": cik,
                         "tag": tag,
-                        "unit": "USD",
+                        "unit": unit,
                         "value": val,
                         "fiscal_year": fy,
                         "fiscal_period": "FY",

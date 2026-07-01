@@ -16,11 +16,11 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 
 import pandas as pd
 from anthropic import Anthropic
 
+from extraction.parsing import parse_json_array
 from ingestion.config import bronze_path
 
 MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
@@ -86,12 +86,7 @@ def extract_events(client: Anthropic, batch: pd.DataFrame) -> list[dict]:
             "content": EXTRACTION_PROMPT.format(excerpts=json.dumps(excerpts, default=str)),
         }],
     )
-    raw = message.content[0].text.strip()
-    raw = re.sub(r"^```(?:json)?|```$", "", raw, flags=re.MULTILINE).strip()
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError:
-        return []
+    return parse_json_array(message.content[0].text)
 
 
 def _related_ticker(vendor: str | None) -> str | None:

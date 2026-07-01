@@ -22,7 +22,6 @@ Run: ``python -m extraction.ai_material_facts_extractor [--limit N]``
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import re
 import time
@@ -31,6 +30,8 @@ import pandas as pd
 import requests
 from anthropic import Anthropic
 
+from extraction.checkpoint import load_existing, load_processed, save_processed
+from extraction.parsing import parse_json_array
 from ingestion.config import bronze_path, sec_headers, SEC_REQUEST_DELAY_SECONDS
 
 MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
@@ -92,12 +93,7 @@ def extract_facts(client: Anthropic, filing_text: str) -> list[dict]:
         max_tokens=3000,
         messages=[{"role": "user", "content": EXTRACTION_PROMPT.format(filing_text=filing_text)}],
     )
-    raw = message.content[0].text.strip()
-    raw = re.sub(r"^```(?:json)?|```$", "", raw, flags=re.MULTILINE).strip()
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError:
-        return []
+    return parse_json_array(message.content[0].text)
 
 
 def main() -> None:
@@ -107,16 +103,26 @@ def main() -> None:
         "--forms", nargs="+", default=["8-K", "10-K", "10-Q"],
         help="Filing forms to scan (10-K/10-Q carry richer AI discussion than 8-K).",
     )
+    parser.add_argument(
+        "--full-refresh", action="store_true",
+        help="Ignore the checkpoint and re-extract everything from scratch.",
+    )
     args = parser.parse_args()
 
     if not os.getenv("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY is not set. See .env.example.")
 
     client = Anthropic()
+    processed = set() if args.full_refresh else load_processed("ai_material_facts")
     filings = _load_filings(args.limit, set(args.forms))
+    filings = filings[~filings["accession_number"].isin(processed)]
     print(f"Scanning {len(filings)} {sorted(set(args.forms))} filings for material AI facts...")
 
+    if processed:
+        print(f"  checkpoint: skipping {len(processed)} already-processed filings")
+
     records: list[dict] = []
+    done: set[str] = set()
     for _, f in filings.iterrows():
         if not f.get("document_url"):
             continue
@@ -148,6 +154,8 @@ def main() -> None:
                 }
             )
 
+        done.add(f["accession_number"])
+
     # Always write the full schema, even with zero records, so downstream dbt can
     # read the Parquet (an empty DataFrame would have no columns and fail to load).
     columns = [
@@ -156,9 +164,13 @@ def main() -> None:
         "source_url",
     ]
     df = pd.DataFrame(records, columns=columns)
+    if not args.full_refresh:
+        existing = load_existing("ai_material_facts", "ai_material_facts.parquet", columns)
+        df = pd.concat([existing, df], ignore_index=True) if len(existing) else df
     out = bronze_path("ai_material_facts") / "ai_material_facts.parquet"
     df.to_parquet(out, index=False)
-    print(f"Wrote {len(df)} material AI-fact records -> {out}")
+    save_processed("ai_material_facts", (set() if args.full_refresh else processed) | done)
+    print(f"Wrote {len(df)} material AI-fact records ({len(done)} filings newly processed) -> {out}")
 
 
 if __name__ == "__main__":

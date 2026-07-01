@@ -31,6 +31,8 @@ Entities (business objects):
   with verbatim text + source link (mart_ai_material_facts, grain = one fact). Broader
   than AICommitment: covers partnerships, products, capex, acquisitions, research,
   revenue/demand, governance, and risk/regulatory — quantified or not.
+- CalendarDay — one calendar day (dim_date, grain = date_day) with year, quarter,
+  month, year_month attributes, for grouping any fact's date column by period.
 """.strip()
 
 RELATIONSHIPS = """
@@ -66,6 +68,10 @@ Metric glossary (definitions — use these exact formulas):
 - commitment_to_revenue_ratio = amount_usd / latest_revenue (precomputed).
 - daily_return = one-day fractional price change (precomputed on mart_prices).
 - ma_50 / ma_200 = 50- and 200-day moving averages of close (precomputed).
+- shares_outstanding = diluted share count reported for the period (mart_fundamentals).
+- market_cap = latest shares_outstanding x latest close: join each company's most
+  recent mart_fundamentals row (max period_end, shares_outstanding not null) to its
+  most recent mart_prices row (max trade_date) on ticker.
 - "Latest" for a company means the row with the max period_end (fundamentals) or
   max trade_date (prices) for that ticker.
 - Outperform / underperform vs sector = a Company's daily_return above / below the
@@ -201,6 +207,27 @@ SELECT fact_year, ticker, category, COUNT(*) AS fact_count
 FROM mart_ai_material_facts
 GROUP BY fact_year, ticker, category
 ORDER BY fact_year DESC, fact_count DESC;
+
+Q: Which are the 10 largest companies by market cap?
+SQL:
+WITH latest_shares AS (
+    SELECT ticker, company_name, shares_outstanding,
+           ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY period_end DESC) AS rn
+    FROM mart_fundamentals
+    WHERE shares_outstanding IS NOT NULL
+),
+latest_price AS (
+    SELECT ticker, close,
+           ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY trade_date DESC) AS rn
+    FROM mart_prices
+)
+SELECT s.ticker, s.company_name,
+       s.shares_outstanding * p.close AS market_cap
+FROM latest_shares s
+JOIN latest_price p ON s.ticker = p.ticker AND p.rn = 1
+WHERE s.rn = 1
+ORDER BY market_cap DESC
+LIMIT 10;
 """.strip()
 
 

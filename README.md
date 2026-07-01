@@ -205,13 +205,14 @@ the Unity Catalog volume and rebuild on `--target databricks` (see
 - [x] LLM extraction pipeline (AI commitments + material AI facts, source-linked)
 - [x] Natural-language Q&A app (ontology-grounded text-to-SQL; deployed to Streamlit)
 - [x] Power BI semantic model + 5-page Direct Lake report (DAX measures, Deneb visual)
-- [x] CI (dbt build on DuckDB + ruff) and Delta `OPTIMIZE`/`ZORDER` post-hooks
+- [x] CI (dbt build on DuckDB + ruff + pytest + semantic-layer freshness check) and Delta `OPTIMIZE`/`ZORDER` post-hooks
+- [x] Data-quality guards: AI marts fail the build when empty, warn when thin; explicit `dim_date`; market cap via shares outstanding
 - [x] Microsoft Fabric: F2 capacity → mirrored Databricks catalog → Direct Lake model
 - [x] Fabric **Data Agent** (NL Q&A grounded on the Direct Lake semantic model + ontology)
 - [ ] Fabric IQ **Ontology** item generated from the semantic model (preview)
 - [ ] Power BI report screenshots for the portfolio
 - [ ] Reach the Fabric Data Agent from Claude over MCP
-- [ ] Databricks Jobs orchestration (scheduled refresh)
+- [x] Orchestration: one-command refresh (GitHub Actions: ingest → extract → upload Bronze → dbt build; checkpointed LLM extraction)
 
 ---
 
