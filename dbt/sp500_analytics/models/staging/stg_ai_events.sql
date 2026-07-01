@@ -1,6 +1,8 @@
--- Industry-wide AI events come from a curated seed file, not an ingested source.
-with seed as (
-    select * from {{ ref('ai_industry_events') }}
+-- Industry-wide AI events: LLM-structured from real GDELT news candidates
+-- (ingestion/ai_industry_news -> extraction/ai_event_extractor -> bronze.ai_events).
+-- Replaces the old hand-curated seed; every row carries a real source url + date.
+with source as (
+    select * from {{ source('bronze', 'ai_events') }}
 )
 
 select
@@ -11,4 +13,4 @@ select
     related_ticker,
     significance,
     url
-from seed
+from source

@@ -99,8 +99,8 @@ The cloud build (provisioning guide: [`docs/cloud-setup.md`](docs/cloud-setup.md
 |--------|------|------|-------|
 | [SEC EDGAR](https://www.sec.gov/edgar/sec-api-documentation) | XBRL fundamentals (10-K/10-Q), 8-K filings | None (User-Agent required) | Bulk + per-company APIs |
 | [yfinance](https://github.com/ranaroussi/yfinance) | Daily OHLCV prices | None | ~5y daily history |
-| Earnings transcripts | AI commitment text | Varies | Used by the LLM extraction layer |
-| Curated seed file | Major AI industry events (GPT-4, Claude, Gemini launches) | N/A | [`dbt/sp500_analytics/seeds/ai_industry_events.csv`](dbt/sp500_analytics/seeds/ai_industry_events.csv) |
+| SEC 8-K / 10-K / 10-Q | AI commitments & material facts (LLM-extracted) | None (User-Agent required) | Verbatim text + `source_url` per row |
+| [Wikipedia AI timelines](https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence) | AI industry events (LLM-structured) | None (UA required) | Citation-backed; spans years → `extraction/ai_event_extractor` |
 
 ---
 
@@ -199,19 +199,20 @@ the Unity Catalog volume and rebuild on `--target databricks` (see
 
 - [x] Repository scaffold, architecture docs, dbt project skeleton
 - [x] Ingestion scripts (S&P 500 list, yfinance prices, EDGAR fundamentals/filings)
-- [x] AI industry events seed file
+- [x] AI industry events — grounded ingestion (Wikipedia AI timelines → LLM-structured), replacing the seed
 - [x] Ingestion output loaded to Databricks Bronze (Delta / Unity Catalog)
 - [x] Silver/Gold dbt models + tests (medallion; star schema with `dim_tickers`)
 - [x] LLM extraction pipeline (AI commitments + material AI facts, source-linked)
 - [x] Natural-language Q&A app (ontology-grounded text-to-SQL; deployed to Streamlit)
 - [x] Power BI semantic model + 5-page Direct Lake report (DAX measures, Deneb visual)
-- [x] CI (dbt build on DuckDB + ruff) and Delta `OPTIMIZE`/`ZORDER` post-hooks
+- [x] CI (dbt build on DuckDB + ruff + pytest + semantic-layer freshness check) and Delta `OPTIMIZE`/`ZORDER` post-hooks
+- [x] Data-quality guards: AI marts fail the build when empty, warn when thin; explicit `dim_date`; market cap via shares outstanding
 - [x] Microsoft Fabric: F2 capacity → mirrored Databricks catalog → Direct Lake model
 - [x] Fabric **Data Agent** (NL Q&A grounded on the Direct Lake semantic model + ontology)
 - [ ] Fabric IQ **Ontology** item generated from the semantic model (preview)
 - [ ] Power BI report screenshots for the portfolio
 - [ ] Reach the Fabric Data Agent from Claude over MCP
-- [ ] Databricks Jobs orchestration (scheduled refresh)
+- [x] Orchestration: one-command refresh (GitHub Actions: ingest → extract → upload Bronze → dbt build; checkpointed LLM extraction)
 
 ---
 

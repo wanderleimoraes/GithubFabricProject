@@ -1,0 +1,69 @@
+name: Refresh data pipeline
+
+# End-to-end refresh: ingest public data -> LLM extraction -> upload Bronze to
+# Databricks -> dbt build (Silver/Gold). The Fabric mirror auto-syncs from there.
+#
+# Trigger manually from the Actions tab. To schedule it, uncomment the cron block —
+# but remember every run spends Anthropic credit (extraction) and Databricks compute.
+#
+# Required repository secrets (Settings -> Secrets and variables -> Actions):
+#   ANTHROPIC_API_KEY, SEC_USER_AGENT,
+#   DATABRICKS_HOST, DATABRICKS_HTTP_PATH, DATABRICKS_TOKEN, DATABRICKS_CATALOG
+
+on:
+  workflow_dispatch:
+    inputs:
+      extraction_limit:
+        description: "Max filings per extractor"
+        default: "100"
+  # schedule:
+  #   - cron: "0 6 * * 1"   # Mondays 06:00 UTC — enable once credit/spend is budgeted
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      DATA_DIR: ${{ github.workspace }}/data
+      DBT_PROFILES_DIR: ${{ github.workspace }}/dbt/sp500_analytics/ci
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      DATABRICKS_CATALOG: ${{ secrets.DATABRICKS_CATALOG }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt databricks-sdk
+
+      - name: Ingest public data
+        run: |
+          python -m ingestion.sp500_constituents
+          python -m ingestion.market_prices
+          python -m ingestion.edgar_fundamentals
+          python -m ingestion.edgar_filings --forms 8-K 10-K 10-Q
+          python -m ingestion.ai_events_wikipedia
+
+      - name: LLM extraction (checkpointed — only new filings cost credit)
+        run: |
+          python -m extraction.ai_commitment_extractor --limit ${{ inputs.extraction_limit || 100 }}
+          python -m extraction.ai_material_facts_extractor --limit ${{ inputs.extraction_limit || 100 }}
+          python -m extraction.ai_event_extractor
+
+      - name: Normalize parquet timestamps for Databricks
+        run: python -m scripts.convert_bronze_timestamps
+
+      - name: Upload Bronze to Databricks (volume + Delta tables)
+        run: python -m scripts.upload_bronze_databricks
+
+      - name: dbt build (Silver/Gold on Databricks)
+        working-directory: dbt/sp500_analytics
+        run: |
+          dbt seed --target databricks
+          dbt build --target databricks

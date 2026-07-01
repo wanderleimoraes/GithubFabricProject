@@ -28,7 +28,8 @@ pivoted as (
         max(case when canonical_metric = 'total_liabilities'   then value end) as total_liabilities,
         max(case when canonical_metric = 'stockholders_equity' then value end) as stockholders_equity,
         max(case when canonical_metric = 'cash_and_equivalents' then value end) as cash_and_equivalents,
-        max(case when canonical_metric = 'eps_diluted'         then value end) as eps_diluted
+        max(case when canonical_metric = 'eps_diluted'         then value end) as eps_diluted,
+        max(case when canonical_metric = 'shares_outstanding'  then value end) as shares_outstanding
     from normalized
     where fiscal_period = 'FY'
     group by ticker, fiscal_period, period_end

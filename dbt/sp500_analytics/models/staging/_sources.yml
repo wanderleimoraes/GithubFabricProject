@@ -43,3 +43,8 @@ sources:
         description: "LLM-extracted material AI facts (any level) from 8-K filings, with verbatim text and source links."
         meta:
           external_location: "{{ env_var('DATA_DIR', '../../data') }}/bronze/ai_material_facts/ai_material_facts.parquet"
+
+      - name: ai_events
+        description: "Industry-wide AI events, LLM-structured from GDELT news candidates (each with a real source url + date)."
+        meta:
+          external_location: "{{ env_var('DATA_DIR', '../../data') }}/bronze/ai_events/ai_events.parquet"

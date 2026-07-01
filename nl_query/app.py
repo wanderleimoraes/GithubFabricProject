@@ -24,9 +24,11 @@ load_dotenv()
 try:
     from nl_query.ontology import build_ontology_context
     from nl_query.schema_context import allowed_tables, build_schema_context
+    from nl_query.sql_guard import is_safe
 except ImportError:
     from ontology import build_ontology_context  # type: ignore[no-redef]
     from schema_context import allowed_tables, build_schema_context  # type: ignore[no-redef]
+    from sql_guard import is_safe  # type: ignore[no-redef]
 
 MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
 DUCKDB_PATH = os.getenv("DUCKDB_PATH", "./data/sp500.duckdb")
@@ -90,9 +92,6 @@ Schema:
 Semantic layer:
 {ontology}"""
 
-FORBIDDEN = re.compile(r"\b(insert|update|delete|drop|alter|create|attach|copy|pragma)\b", re.I)
-
-
 def generate_sql(client: Anthropic, question: str, schema: str) -> str:
     system = SQL_SYSTEM_PROMPT.format(
         tables=", ".join(sorted(allowed_tables())),
@@ -107,11 +106,6 @@ def generate_sql(client: Anthropic, question: str, schema: str) -> str:
     )
     sql = msg.content[0].text.strip()
     return re.sub(r"^```(?:sql)?|```$", "", sql, flags=re.MULTILINE).strip()
-
-
-def is_safe(sql: str) -> bool:
-    first_word = sql.lower().lstrip().split()[0] if sql.strip() else ""
-    return first_word in ("select", "with") and not FORBIDDEN.search(sql)
 
 
 def narrate(client: Anthropic, question: str, df: pd.DataFrame) -> str:

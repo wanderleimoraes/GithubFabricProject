@@ -36,6 +36,9 @@ WANTED_TAGS = {
     "CashAndCashEquivalentsAtCarryingValue",
     "OperatingIncomeLoss",
     "EarningsPerShareDiluted",
+    # Share counts (unit: "shares") — enable market cap = shares x close downstream.
+    "WeightedAverageNumberOfDilutedSharesOutstanding",
+    "CommonStockSharesOutstanding",
 }
 
 
